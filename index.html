@@ -7,9 +7,8 @@
     <meta name=description content="mjdbc - small and efficient JDBC wrapper">
     <meta name=keywords content="jdbc, java, jdbi, mjdbc, sql, mapper, transaction, ORM">
     <meta name=author content="Mikhail Fursov and mjdbc contributors">
-    <title>mjdbc - small and efficient JDBC wrapper</title>
+    <title>mJDBC - small and efficient JDBC wrapper</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="site.css">
 
@@ -17,69 +16,104 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
+
 <div class="bs-docs-header" id="content" tabindex="-1">
-    <div class="container"><h1 class="logo-header">mjdbc</h1>
-        <p>An overview of <b>mjdbc</b>, how to download and use, basic templates and examples, and more.</p>
+    <div class="container">
+        <h1 class="logo-header">mJDBC<sub>v1.0.0</sub></h1>
+        <div class="header-text">лаконичная, простая и удобная
+            библиотека для <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a>
+        </div>
+        <div class="header-links-block">
+            <a href="" class="btn btn-default btn-sm btn-header" target="_blank">Maven</a>
+            <a href="http://github.com/mjdbc/mjdbc" class="btn btn-default btn-sm btn-header" target="_blank">GitHub</a>
+        </div>
     </div>
 </div>
+
 <div class="container">
     <div class="row">
+        <!--Main Content -->
+        <div class="col-xs-9">
+            <section id="GroupInstall" class="group">
+                <h3>Установка</h3>
+                <div id="GroupInstallExample" class="subgroup">
+                    <h4>Пример использования</h4>
+                </div>
+            </section>
+            <section id="GroupOverview" class="group">
+                <h3>Обзор функционала</h3>
+                <div id="GroupOverviewSub1" class="subgroup">
+                    <h4>Group B Sub 1</h4>
+                </div>
+                <div id="GroupOverviewSub2" class="subgroup">
+                    <h4>Group B Sub 2</h4>
+                </div>
+            </section>
+            <section id="GroupTransactions" class="group">
+                <h3>Транзакции</h3>
+            </section>
+            <section id="GroupMapping" class="group">
+                <h3>Отображение типов</h3>
+            </section>
+            <section id="GroupSql" class="group">
+                <h3>SQL запросы</h3>
+                <div id="GroupSqlInterface" class="subgroup">
+                    <h4>SQL интерфейсы</h4>
+                </div>
+                <div id="GroupSqlBatch" class="subgroup">
+                    <h4>Batch-операции</h4>
+                </div>
+            </section>
+            <section id="GroupProfiling" class="group">
+                <h3>Профилировка</h3>
+            </section>
+            <section id="GroupLowLevelApi" class="group">
+                <h3>Низкоуровневый интерфейс</h3>
+            </section>
+            <section id="GroupRecommendations" class="group">
+                <h3>Рекомендации</h3>
+            </section>
+        </div>
         <!--Nav Bar -->
         <nav class="col-xs-3 bs-docs-sidebar">
             <ul id="sidebar" class="nav nav-stacked fixed">
                 <li>
-                    <a href="#GroupA">Group A</a>
+                    <a href="#GroupInstall">Установка</a>
                     <ul class="nav nav-stacked">
-                        <li><a href="#GroupASub1">Sub-Group 1</a></li>
-                        <li><a href="#GroupASub2">Sub-Group 2</a></li>
+                        <li><a href="#GroupInstallExample">Пример использования</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#GroupB">Group B</a>
+                    <a href="#GroupOverview">Обзор функционала</a>
                     <ul class="nav nav-stacked">
-                        <li><a href="#GroupBSub1">Sub-Group 1</a></li>
-                        <li><a href="#GroupBSub2">Sub-Group 2</a></li>
+                        <li><a href="#GroupOverviewSub1">Sub-Group 1</a></li>
+                        <li><a href="#GroupOverviewSub2">Sub-Group 2</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#GroupC">Group C</a>
+                    <a href="#GroupTransactions">Транзакции</a>
+                </li>
+                <li>
+                    <a href="#GroupMapping">Отображение типов</a>
+                </li>
+                <li>
+                    <a href="#GroupSql">SQL запросы</a>
                     <ul class="nav nav-stacked">
-                        <li><a href="#GroupCSub1">Sub-Group 1</a></li>
-                        <li><a href="#GroupCSub2">Sub-Group 2</a></li>
+                        <li><a href="#GroupSqlInterface">SQL интерфейсы</a></li>
+                        <li><a href="#GroupSqlBatch">Batch-операции</a></li>
                     </ul>
+                </li>
+                <li>
+                    <a href="#GroupProfiling">Профилировка</a>
+                </li>
+                <li>
+                    <a href="#GroupLowLevelApi">Низкоуровневый интерфейс</a>
+                </li>
+                <li>
+                    <a href="#GroupRecommendations">Рекомендации</a>
                 </li>
             </ul>
         </nav>
-        <!--Main Content -->
-        <div class="col-xs-9">
-            <section id="GroupA" class="group">
-                <h3>Group A</h3>
-                <div id="GroupASub1" class="subgroup">
-                    <h4>Group A Sub 1</h4>
-                </div>
-                <div id="GroupASub2" class="subgroup">
-                    <h4>Group A Sub 2</h4>
-                </div>
-            </section>
-            <section id="GroupB" class="group">
-                <h3>Group B</h3>
-                <div id="GroupBSub1" class="subgroup">
-                    <h4>Group B Sub 1</h4>
-                </div>
-                <div id="GroupBSub2" class="subgroup">
-                    <h4>Group B Sub 2</h4>
-                </div>
-            </section>
-            <section id="GroupC" class="group">
-                <h3>Group C</h3>
-                <div id="GroupCSub1" class="subgroup">
-                    <h4>Group C Sub 1</h4>
-                </div>
-                <div id="GroupCSub2" class="subgroup">
-                    <h4>Group C Sub 2</h4>
-                </div>
-            </section>
-        </div>
     </div>
 </div>
 <footer class="bs-docs-footer" role="contentinfo">
