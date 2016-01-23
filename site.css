@@ -1,5 +1,9 @@
 body {
-    font-family: serif;
+    font-size: 16px;
+}
+
+.fixed {
+    position: fixed;
 }
 
 /* Header */
@@ -10,6 +14,7 @@ body {
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
     background: #5e5e5e linear-gradient(to bottom, #1F1E1E 0, #5e5e5e 100%) repeat-x;
+    font-family: serif;
 }
 
 .bs-docs-header a {
@@ -43,25 +48,41 @@ body {
     margin-right: 7px;
 }
 
-/* */
+/* Sections */
+.bs-docs-main {
+    font-family: sans-serif;
+}
 
 .group {
-    background: yellow;
-    width: 200px;
-    height: 500px;
+    width: 100%;
+    min-height: 200px;
 }
 
 .group .subgroup {
-    background: orange;
-    width: 150px;
-    height: 200px;
+    width: 100%;
+    min-height: 200px;
 }
 
-.fixed {
-    position: fixed;
+.group h3 {
+    font-weight: bold;
+    color: teal;
+    margin-top: 20px;
 }
 
-/* sidebar */
+.subgroup h4 {
+    font-weight: bold;
+    color: teal;
+    margin-top: 20px;
+}
+
+.prettyprint {
+    margin: 10px 0 30px;
+    font-size: 16px;
+    padding: 20px !important;
+    max-width: 750px
+}
+
+/* Sidebar */
 .bs-docs-sidebar {
     padding-left: 20px;
     margin-top: 20px;
@@ -92,7 +113,7 @@ body {
     color: #333;
     text-decoration: none;
     background-color: transparent;
-    border-left-color: #00AA88;
+    border-left-color: teal;
 }
 
 /* all active links */
