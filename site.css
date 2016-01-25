@@ -1,5 +1,5 @@
 body {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .fixed {
@@ -7,13 +7,16 @@ body {
 }
 
 /* Header */
+/*noinspection CssOptimizeSimilarProperties*/
 .bs-docs-header {
     position: relative;
     padding: 20px 0;
     color: #f3f3f3;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
-    background: #5e5e5e linear-gradient(to bottom, #1F1E1E 0, #5e5e5e 100%) repeat-x;
+    background-color: #1F1E1E;
+    background-image: linear-gradient(to bottom, #1F1E1E 0, #5e5e5e 100%);
+    background-repeat: repeat-x;
     font-family: serif;
 }
 
@@ -87,6 +90,35 @@ body {
     padding-left: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.feature-list {
+    padding-left: 15px;
+    list-style: none;
+    line-height: 200%;
+}
+
+.feature-list li {
+    color: #555;
+}
+
+.feature-list li:before {
+    /* Using a Bootstrap glyphicon as the bullet point */
+    content: "\e080";
+    /* noinspection CssNoGenericFontName */
+    font-family: 'Glyphicons Halflings';
+    font-size: 14px;
+    float: left;
+    margin-left: -22px;
+    margin-top: -1px;
+    color: #CCC;
+}
+
+.feature-list i {
+    color: #333;
+    font-size: 16px;
+    font-style: normal;
+    letter-spacing: 1px;
 }
 
 /* all links */

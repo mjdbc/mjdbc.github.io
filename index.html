@@ -37,6 +37,21 @@
     <div class="row">
         <!--Main Content -->
         <div class="col-xs-9">
+            <section id="GroupAbout" class="group">
+                <h3>О библиотеке</h3>
+                <ul class="feature-list">
+                    <li><i>Компактность</i> - около 50кб, нет дополнительных зависимостей.</li>
+                    <li><i>Простота</i> - не нужно учить лишнее. Инициализация: от 1 строки кода.</li>
+                    <li><i>Надеждность</i> - SQL запросы проверяются на момент старта приложения.</li>
+                    <li><i>Гибкость</i> - доступ к низкоуровневому функционалу JDBC.</li>
+                    <li><i>Производительность</i> - нет дополнительных вычислительных расходов по сравнению с JDBC.</li>
+                    <li><i>Транзакционность</i> - методы могут выполнять роль транзакций. Открытие соединения при исполнении первого запроса.</li>
+                    <li><i>Расширяемость</i> - регистрация новых типов данных, переопределение существующих.</li>
+                    <li><i>Профилировка</i> - доступ метрикам исполнения запросов и транзакций.</li>
+                    <li><i>Открытость</i> - открытый исходный код: возможность изменять и исправлять.</li>
+                    <li><i>Надежность</i> - используется в реальных проектах.</li>
+                </ul>
+            </section>
             <section id="GroupInstall" class="group">
                 <h3>Установка</h3>
                 <div>
@@ -52,7 +67,7 @@
             <section id="GroupExamples" class="group">
                 <div id="GroupInstallExample" class="subgroup">
                     <h3>Примеры использования</h3>
-                    Пример 1: Простые SQL запросы
+                    Пример 1: SQL запросы
                     <pre class="prettyprint">
 // Шаг 1: Создаем mJDBC адаптер для java.sql.DataSource
 java.sql.DataSource ds = ...;
@@ -142,6 +157,7 @@ userDbi.registerUser(new User("root"));</pre>
         <!--Nav Bar -->
         <nav class="col-xs-3 bs-docs-sidebar">
             <ul id="sidebar" class="nav nav-stacked fixed">
+                <li><a href="#GroupAbout">О библиотеке</a></li>
                 <li><a href="#GroupInstall">Установка</a></li>
                 <li><a href="#GroupExamples">Примеры использования</a></li>
                 <li><a href="#GroupOverview">Обзор функционала</a>
