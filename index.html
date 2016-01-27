@@ -137,7 +137,7 @@ static Db newInstance(DataSource ds)</pre>
                 <p><a href="#GroupSql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
                     Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов описанных в качестве @Sql аннотаций.
                 <pre class="prettyprint">
-&lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface);</pre>
+&lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface)</pre>
                 <p><a href="#GroupBinders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder</i>,
                     который обеспечивает отображение значения параметра в JDBC параметр для <i>java.sql.PreparedStatement</i></p>
                 <pre class="prettyprint">
@@ -145,7 +145,7 @@ static Db newInstance(DataSource ds)</pre>
                 За <a href="#GroupMappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper</i>.
                 mJDBC поддерживает примитивные Java типы, JDBC типы и списки. Поддержка новых типов может быть расширена за счет использования следующего метода:
                 <pre class="prettyprint">
-&lt;T&gt; void registerMapper(Class&lt;T&gt; mapperClass, DbMapper&lt;T&gt; mapper);</pre>
+&lt;T&gt; void registerMapper(Class&lt;T&gt; mapperClass, DbMapper&lt;T&gt; mapper)</pre>
                 <p>Помимо создания транзакционных и SQL интерфейсов mJDBC позволяет создавать <a href="#GroupLowLevelApi">прямые запросы</a> к базе.
                     При этом вызванный метод будет обернут в транзакцию так, если бы использовался транзацкионный интерфейс.</p>
                 <p>Внутри у метода будет доступ как к управляемому JDBC соединению (<i>DbConnection</i>), так и к <i>DbPreparedStatement</i> классу который поддерживает
@@ -154,19 +154,19 @@ static Db newInstance(DataSource ds)</pre>
                     Более того, операции которые могут и не могут возвращать нулевые значения разделены. </p>
                 <pre class="prettyprint">
 @Nullable
-&lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
+&lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op)
 
 @NotNull
-&lt;T&gt; T executeNN(@NotNull DbOpNN&lt;T&gt; op);
+&lt;T&gt; T executeNN(@NotNull DbOpNN&lt;T&gt; op)
 
-void executeV(@NotNull  DbOpV op);
+void executeV(@NotNull  DbOpV op)
                 </pre>
                 <p>
                     Доступ к простейшей <a href="#GroupProfiling">профилировочной информации</a> о числе вызовов и суммарном времени исполнения транзационных методов и SQL-запросов
                     можно получить используя метод <i>getTimers</i>:
                 </p>
                 <pre class="prettyprint">
-Map&lt;Method, DbTimer&gt; getTimers();</pre>
+Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
             <section id="GroupTransactions" class="group">
                 <h3>Транзакции</h3>
