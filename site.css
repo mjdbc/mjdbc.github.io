@@ -99,6 +99,22 @@ body {
     line-height: 200%;
 }
 
+.spec-list {
+    margin-top: 10px;
+    list-style: square;
+    line-height: 175%;
+}
+
+.nw::after {
+    content: "\e164";
+    /* noinspection CssNoGenericFontName */
+    font-family: 'Glyphicons Halflings';
+    font-size: 9px;
+    margin-left: 2px;
+    font-style: normal;
+}
+
+
 .feature-list li {
     color: #555;
 }

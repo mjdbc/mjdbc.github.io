@@ -133,7 +133,7 @@ static Db newInstance(DataSource ds)</pre>
                     Для регистрации транзакционных интерфейсов используйте следующий метод:
                 </p>
                 <pre class="prettyprint">
-&lt;T&gt; T attachDbi(T impl, @NotNull Class&lt;T&gt; dbiInterface)</pre>
+&lt;T&gt; T attachDbi(T impl, Class&lt;T&gt; dbiInterface)</pre>
                 <p><a href="#GroupSql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
                     Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов описанных в качестве @Sql аннотаций.
                 <pre class="prettyprint">
@@ -170,6 +170,42 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
             <section id="GroupTransactions" class="group">
                 <h3>Транзакции</h3>
+                mJDBC предоставляет следующий механизм поддержки транзакций:
+                <ul class="spec-list">
+                    <li>Разработчик описывает и имплементирует Java интерфейс</li>
+                    <li>mJDBC предоставляет свою прокси-имплементацию этого интерфейса, при вызове методов которого
+                        создаются транзакции и вызывается оригинальная имплементация
+                    </li>
+                    <li>Разработчик работает с proxy-имплементацией своего интерфейса.</li>
+                </ul>
+                <p>
+                    Каждый метод интерфейса представляет из себя отдельную транзакцию: метод <i>commit</i> для транзакции вызывается при успешном завершении метода.
+                    Метод <i>rollback</i>, если имплементация производит исключение.
+                </p>
+                <p>
+                    В случае, если из один транзакционный метод вызывает другой транзакционный метод, новой транзакции не создается.
+                    Вызванный метод становится частью верхнеуровневой транзакции.
+                </p>
+                <p>
+                    Реализация транзакций mJDBC устроена так, что реальная транзакция, так же как и запрос соединения и <i>java.sql.DataSource</i> происходит не в момент вызова прокси-метода,
+                    а при первом реальном исполнении SQL. Таким образом, вызовы которые не производят операций с базой, например, используют кэш или проверяют аргументы и
+                    возвращают код ошибки, выполняются значительно быстрее.
+                </p>
+                <p>
+                    Транзакционные интерфейсы ничем не отличаются от обычных Java интерфейсов: mJDBC не требует наследования маркерных интерфейсов или наличия аннотаций.
+                    Для получения имплементации транзакционного интерфейса необходимо зарегистрировать его и его имплементацию при помощи вызова:
+                </p>
+                <pre class="prettyprint">
+@NotNull
+&lt;T&gt; T attachDbi(@NotNull T impl, @NotNull Class&lt;T&gt; dbiInterface)</pre>
+                <p>Сокращение <i>dbi</i> здесь означает: database interface.</p>
+                <p> Пример использования транзакционного dbi интерфейса:
+                    <i>
+                        <a href="https://github.com/mjdbc/mjdbc/blob/master/src/test/java/com/github/mjdbc/test/asset/dbi/SampleDbi.java" target="_blank" class="nw">SampleDbi</a>,
+                        <a href="https://github.com/mjdbc/mjdbc/blob/master/src/test/java/com/github/mjdbc/test/asset/dbi/SampleDbiImpl.java" target="_blank" class="nw">SampleDbiImpl</a>,
+                        <a href="https://github.com/mjdbc/mjdbc/blob/master/src/test/java/com/github/mjdbc/test/SamplesTest.java" target="_blank" class="nw">SamplesTest</a>.
+                    </i>
+                </p>
             </section>
             <section id="GroupSql" class="group">
                 <h3>SQL интерфейс</h3>
@@ -201,6 +237,7 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                 <li><a href="#GroupExamples">Примеры использования</a></li>
                 <li><a href="#GroupAdapter">Обзор mJDBC адаптера</a></li>
                 <li><a href="#GroupTransactions">Транзакции</a></li>
+                <li><a href="#GroupSql">SQL интерфейс</a></li>
                 <li><a href="#GroupBinders">SQL параметры</a></li>
                 <li><a href="#GroupMappers">SQL результаты</a></li>
                 <li><a href="#GroupBatch">Batch операции</a></li>
