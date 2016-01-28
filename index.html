@@ -209,6 +209,78 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
             <section id="GroupSql" class="group">
                 <h3>SQL интерфейс</h3>
+                <p>
+                    SQL интерфейс - это Java интерфейс, где каждый метод является отдельным SQL запросом. mJDBC создает готовую к использованию имплементацию для таких интерфейсов.
+                    Разработчик использует созданную mJDBC имплементацию для исполнения операций с базой данных вызывая методы интерфейса.</p>
+                <p>
+                    Для того, чтобы описать SQL интерфейс нужно:
+                </p>
+                <ul class="spec-list">
+                    <li>Создать обычный Java интерфейс, где каждый метод будет соответствовать одному SQL запросу.</li>
+                    <li>Написать для каждого метода реальный SQL запрос на языке поддерживаемым используемой базой данных и поместить этот запрос в виде аннотации <i>@Sql</i> к методу.</li>
+                    <li>Привязать параметры Java метода к параметрам SQL запроса используя <i>@Bind</i> и <i>@BindBean</i> аннотации.</li>
+                    <li>Получить имплементацию описанного интерфейса у mJDBC.</li>
+                </ul>
+                Пример SQL интерфейса:
+                <pre class="prettyprint">public interface UserSql {
+    @NotNull
+    @GetGeneratedKeys
+    @Sql("INSERT INTO users(login, first_name, last_name)
+                    VALUES (:login, :firstName, :lastName)")
+    UserId insertUser(@BindBean User user);
+
+    @Nullable
+    @Sql("SELECT * FROM users WHERE id = :id")
+    User getUserById(@Bind("id") UserId id);
+
+    @Nullable
+    @Sql("SELECT * FROM users WHERE login = :login")
+    User getUserByLogin(@Bind("login") String login);
+
+    @Sql("SELECT COUNT(*) FROM users")
+    int countUsers();
+}</pre>
+                <p>
+                    Для того, чтобы получить реализацию этого интерфейса следует вызвать следующий метод mJDBC:
+                </p>
+                <pre class="prettyprint">
+@NotNull
+&lt;T&gt; T attachSql(@NotNull Class &lt;T&gt; sqlInterface);
+</pre>
+                <p>
+                    При этом произойдет парсинг и проверка запроса на предмет корректности подстановки параметров и возвращаемых значений.
+                </p>
+                <p>
+                    Подставляемые параметры в SQL запросе именованы и имеют префикс к имени в виде двоеточия: ':'.
+                </p>
+                <p>
+                    Соответствие SQL и Java параметров строится по их именам. Для этого для Java параметров используется аннотация <i>@Bind</i>
+                    в которой указывается имя соответствующего SQL параметра. Также, для объектных типов возможно использование аннотации @BindBean:
+                    в этом случае в качестве параметров SQL будут подставлены имена и значения полей Java объекта.
+                    Поля объекта должны быть публичными, либо иметь публичные get-методы.
+                </p>
+                <p>
+                    Исполнение каждого SQL запроса приведет к созданию и исполнению <i>java.sql.PreparedStatement</i>. При этом, для параметров имеющих базовые
+                    Java или JDBC типы вызовется соответствующий метод из PreparedStatement. Для того, чтобы в качестве параметров использовать свои собственные
+                    типы данных необходимо зарегистрировать в mJDBC механизм отображения параметров в виде имплементации класса
+                    <a href="#GroupBinders"> <i>DbBinder</i></a>, либо унаследовать интерфейс описывающий поддерживаемый mJDBC тип:
+                    <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbInt.java" target="_blank" class="nw"><i>DbInt</i></a>,
+                    <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbString.java" target="_blank" class="nw"><i>DbString</i></a> etc.
+                </p>
+                <p>
+                    В случае, если SQL запрос возвращает нестандартный тип данных необходимо зарегистрировать его отображение из <i>java.sql.ResultSet</i> при помощи
+                    реализации класса <a href="#GroupMappers"><i>DbMapper</i></a>. Списки (<i>java.util.List</i>) и базовые Java и JDBC типы поддерживаются
+                    mJDBC автоматически.
+                </p>
+                <p>
+                    Для возврата авто-генерируемого значения, можно использовать аннотацию <i>@GetGeneratedKeys</i>.
+                    Использование <i>@GetGeneratedKeys</i> в коде не обязательно для запросов начинающихся с префикса "INSERT ":
+                    для них возврат генерируемого значения происходит по умолчанию.
+                </p>
+                <p>
+                    В случае, если Java параметр является коллекцией, итератором или массивом, вместо одного запроса будет выполнена серия <a href="#GroupBatch">batch-запросов</a>.
+                </p>
+
             </section>
             <section id="GroupBinders" class="group">
                 <h3>SQL параметры</h3>

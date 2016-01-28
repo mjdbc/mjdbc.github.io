@@ -120,7 +120,6 @@ body {
 }
 
 .feature-list li:before {
-    /* Using a Bootstrap glyphicon as the bullet point */
     content: "\e080";
     /* noinspection CssNoGenericFontName */
     font-family: 'Glyphicons Halflings';
