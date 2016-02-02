@@ -37,7 +37,7 @@
     <div class="row">
         <!--Main Content -->
         <div class="col-xs-9">
-            <section id="GroupAbout" class="group">
+            <section id="About" class="group">
                 <h3>О библиотеке</h3>
                 <ul class="feature-list">
                     <li><i>Компактность</i> - около 50кб, нет дополнительных зависимостей.</li>
@@ -53,7 +53,7 @@
                     <li><i>Надежность</i> - используется в реальных проектах.</li>
                 </ul>
             </section>
-            <section id="GroupInstall" class="group">
+            <section id="Install" class="group">
                 <h3>Установка</h3>
                 <div>
                     Добавьте следующий код в проектный файл Maven:
@@ -65,8 +65,8 @@
 &lt;/dependency&gt;</pre>
                 </div>
             </section>
-            <section id="GroupExamples" class="group">
-                <div id="GroupInstallExample" class="subgroup">
+            <section id="Examples" class="group">
+                <div id="InstallExample" class="subgroup">
                     <h3>Примеры использования</h3>
                     Пример 1: SQL запросы
                     <pre class="prettyprint">
@@ -121,32 +121,32 @@ UserDbi userDbi = db.attachDbi(UserDbi.class, new UserDbiImpl());
 userDbi.registerUser(new User("root"));</pre>
                 </div>
             </section>
-            <section id="GroupAdapter" class="group">
+            <section id="Adapter" class="group">
                 <h3>Обзор mJDBC адаптера</h3>
                 <p>
                     Для того, чтобы начать использовать mJDBC необходимо создать адаптер типа <i>com.github.mjdbc.Db</i> поверх экземпляра <i>javax.sql.DataSource</i>.
                     Для этого нужно использовать статический метод-фабрику:</p>
                 <pre class="prettyprint">
 static Db newInstance(DataSource ds)</pre>
-                <p><a href="#GroupTransactions"> Транзакционные интерфейсы</a> позволяют выполнить серию SQL-запросов как единую транзакцию давая гарантию, что либо все SQL операции внутри
+                <p><a href="#Transactions"> Транзакционные интерфейсы</a> позволяют выполнить серию SQL-запросов как единую транзакцию давая гарантию, что либо все SQL операции внутри
                     транзакции будут завершены успешено, либо ни одна из них не будет иметь эффект при завершении транзакции.
                     Для регистрации транзакционных интерфейсов используйте следующий метод:
                 </p>
                 <pre class="prettyprint">
 &lt;T&gt; T attachDbi(T impl, Class&lt;T&gt; dbiInterface)</pre>
-                <p><a href="#GroupSql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
+                <p><a href="#Sql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
                     Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов описанных в качестве @Sql аннотаций.
                 <pre class="prettyprint">
 &lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface)</pre>
-                <p><a href="#GroupBinders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder</i>,
+                <p><a href="#Binders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder</i>,
                     который обеспечивает отображение значения параметра в JDBC параметр для <i>java.sql.PreparedStatement</i></p>
                 <pre class="prettyprint">
 &lt;T&gt; void registerBinder(Class&lt;? extends T&gt; binderClass, DbBinder&lt;T&gt; binder)</pre>
-                За <a href="#GroupMappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper</i>.
+                За <a href="#Mappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper</i>.
                 mJDBC поддерживает примитивные Java типы, JDBC типы и списки. Поддержка новых типов может быть расширена за счет использования следующего метода:
                 <pre class="prettyprint">
 &lt;T&gt; void registerMapper(Class&lt;T&gt; mapperClass, DbMapper&lt;T&gt; mapper)</pre>
-                <p>Помимо создания транзакционных и SQL интерфейсов mJDBC позволяет создавать <a href="#GroupLowLevelApi">прямые запросы</a> к базе.
+                <p>Помимо создания транзакционных и SQL интерфейсов mJDBC позволяет создавать <a href="#LowLevelApi">прямые запросы</a> к базе.
                     При этом вызванный метод будет обернут в транзакцию так, если бы использовался транзацкионный интерфейс.</p>
                 <p>Внутри у метода будет доступ как к управляемому JDBC соединению (<i>DbConnection</i>), так и к <i>DbPreparedStatement</i> классу который поддерживает
                     работу с <i>DbBinder</i>/<i>DbMapper</i> и именованными параметрами. Помимо этого будет доступ к реальным JDBC объектам.</p>
@@ -162,13 +162,13 @@ static Db newInstance(DataSource ds)</pre>
 void executeV(@NotNull  DbOpV op)
                 </pre>
                 <p>
-                    Доступ к простейшей <a href="#GroupProfiling">профилировочной информации</a> о числе вызовов и суммарном времени исполнения транзационных методов и SQL-запросов
+                    Доступ к простейшей <a href="#Profiling">профилировочной информации</a> о числе вызовов и суммарном времени исполнения транзационных методов и SQL-запросов
                     можно получить используя метод <i>getTimers</i>:
                 </p>
                 <pre class="prettyprint">
 Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
-            <section id="GroupTransactions" class="group">
+            <section id="Transactions" class="group">
                 <h3>Транзакции</h3>
                 mJDBC предоставляет следующий механизм поддержки транзакций:
                 <ul class="spec-list">
@@ -207,7 +207,7 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     </i>
                 </p>
             </section>
-            <section id="GroupSql" class="group">
+            <section id="Sql" class="group">
                 <h3>SQL интерфейс</h3>
                 <p>
                     SQL интерфейс - это Java интерфейс, где каждый метод является отдельным SQL запросом. mJDBC создает готовую к использованию имплементацию для таких интерфейсов.
@@ -263,13 +263,13 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     Исполнение каждого SQL запроса приведет к созданию и исполнению <i>java.sql.PreparedStatement</i>. При этом, для параметров имеющих базовые
                     Java или JDBC типы вызовется соответствующий метод из PreparedStatement. Для того, чтобы в качестве параметров использовать свои собственные
                     типы данных необходимо зарегистрировать в mJDBC механизм отображения параметров в виде имплементации класса
-                    <a href="#GroupBinders"> <i>DbBinder</i></a>, либо унаследовать интерфейс описывающий поддерживаемый mJDBC тип:
+                    <a href="#Binders"> <i>DbBinder</i></a>, либо унаследовать интерфейс описывающий поддерживаемый mJDBC тип:
                     <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbInt.java" target="_blank" class="nw"><i>DbInt</i></a>,
                     <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbString.java" target="_blank" class="nw"><i>DbString</i></a> etc.
                 </p>
                 <p>
                     В случае, если SQL запрос возвращает нестандартный тип данных необходимо зарегистрировать его отображение из <i>java.sql.ResultSet</i> при помощи
-                    реализации класса <a href="#GroupMappers"><i>DbMapper</i></a>. Списки (<i>java.util.List</i>) и базовые Java и JDBC типы поддерживаются
+                    реализации класса <a href="#Mappers"><i>DbMapper</i></a>. Списки (<i>java.util.List</i>) и базовые Java и JDBC типы поддерживаются
                     mJDBC автоматически.
                 </p>
                 <p>
@@ -278,14 +278,14 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     для них возврат генерируемого значения происходит по умолчанию.
                 </p>
                 <p>
-                    В случае, если Java параметр является коллекцией, итератором или массивом, вместо одного запроса будет выполнена серия <a href="#GroupBatch">batch-запросов</a>.
+                    В случае, если Java параметр является коллекцией, итератором или массивом, вместо одного запроса будет выполнена серия <a href="#Batch">batch-запросов</a>.
                 </p>
 
             </section>
-            <section id="GroupBinders" class="group">
+            <section id="Binders" class="group">
                 <h3>SQL параметры</h3>
                 <p>
-                    Для работы с параметрами <a href="#GroupSql">SQL интерфейса</a> используются интерфейс <i>DbBinder</i> и аннотации <i>@Bind</i> и <i>@BindBean</i>.
+                    Для работы с параметрами <a href="#Sql">SQL интерфейса</a> используются интерфейс <i>DbBinder</i> и аннотации <i>@Bind</i> и <i>@BindBean</i>.
                     Интерфейс DbBinder описывает как параметр указанного Java типа должен быть сериализован в качестве параметра <i>java.sql.PreparedStatements</i>:
                 </p>
                 <pre class="prettyprint">
@@ -320,7 +320,7 @@ public interface DbBinder&lt;T&gt; {
                 <p>Проверка на полноту и корректность SQL параметров происходит в момент регистрации SQL-интерфейса.</p>
 
             </section>
-            <section id="GroupMappers" class="group">
+            <section id="Mappers" class="group">
                 <h3>SQL результаты</h3>
                 <p>
                     mJDBC необходимо знать каким образом преобразовывать возвращаемые SQL интерфейсом значния в Java объекты.
@@ -362,34 +362,34 @@ db.registerMapper(User.class, mapper);
                 </p>
 
             </section>
-            <section id="GroupBatch" class="group">
+            <section id="Batch" class="group">
                 <h3>Batch операции</h3>
             </section>
-            <section id="GroupProfiling" class="group">
+            <section id="Profiling" class="group">
                 <h3>Профилировка</h3>
             </section>
-            <section id="GroupLowLevelApi" class="group">
+            <section id="LowLevelApi" class="group">
                 <h3>Низкоуровневый интерфейс</h3>
             </section>
-            <section id="GroupRecommendations" class="group">
+            <section id="Recommendations" class="group">
                 <h3>Рекомендации</h3>
             </section>
         </div>
         <!--Nav Bar -->
         <nav class="col-xs-3 bs-docs-sidebar">
             <ul id="sidebar" class="nav nav-stacked fixed">
-                <li><a href="#GroupAbout">О библиотеке</a></li>
-                <li><a href="#GroupInstall">Установка</a></li>
-                <li><a href="#GroupExamples">Примеры использования</a></li>
-                <li><a href="#GroupAdapter">Обзор mJDBC адаптера</a></li>
-                <li><a href="#GroupTransactions">Транзакции</a></li>
-                <li><a href="#GroupSql">SQL интерфейс</a></li>
-                <li><a href="#GroupBinders">SQL параметры</a></li>
-                <li><a href="#GroupMappers">SQL результаты</a></li>
-                <li><a href="#GroupBatch">Batch операции</a></li>
-                <li><a href="#GroupProfiling">Профилировка</a></li>
-                <li><a href="#GroupLowLevelApi">Низкоуровневый интерфейс</a></li>
-                <li><a href="#GroupRecommendations">Рекомендации</a></li>
+                <li><a href="#About">О библиотеке</a></li>
+                <li><a href="#Install">Установка</a></li>
+                <li><a href="#Examples">Примеры использования</a></li>
+                <li><a href="#Adapter">Обзор mJDBC адаптера</a></li>
+                <li><a href="#Transactions">Транзакции</a></li>
+                <li><a href="#Sql">SQL интерфейс</a></li>
+                <li><a href="#Binders">SQL параметры</a></li>
+                <li><a href="#Mappers">SQL результаты</a></li>
+                <li><a href="#Batch">Batch операции</a></li>
+                <li><a href="#Profiling">Профилировка</a></li>
+                <li><a href="#LowLevelApi">Низкоуровневый интерфейс</a></li>
+                <li><a href="#Recommendations">Рекомендации</a></li>
             </ul>
         </nav>
     </div>
