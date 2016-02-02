@@ -322,6 +322,41 @@ public interface DbBinder&lt;T&gt; {
             </section>
             <section id="GroupMappers" class="group">
                 <h3>SQL результаты</h3>
+                <p>
+                    mJDBC необходимо знать каким образом преобразовывать возвращаемые SQL интерфейсом значния в Java объекты.
+                    По умолчанию mJDBC поддерживает все примитивные Java типы и их объектные аналоги, типы <i>java.sql.Date</i>, <i>java.sql.Timestamp</i>, <i>java.util.Date</i>,
+                    <i>java.math.BigDecimal</i> и интерфейс списков <i>java.util.List</i>. Для списков в качестве реализации используется <i>java.util.ArrayList</i>.
+                </p>
+                <p>
+                    Для того, чтобы расширить диапазон поддерживаемых типов необходимо зарегистрировать реализацию интерфейса <i>DbMapper</i>, которая из текущей позиции
+                    <i>ResultSet</i> создаст и заполнит нужными значениями экземпляр возвращаемого объекта:
+                </p>
+                    <pre class="prettyprint">public interface DbMapper&lt;T&gt; {
+    T map(@NotNull java.sql.ResultSet r) throws SQLException;
+}</pre>
+
+                <p>Например: </p>
+                <pre class="prettyprint">DbMapper&lt;User&gt; mapper = (r) -&gt; {
+    User user = new User();
+    user.id = new UserId(r.getInt("id"));
+    user.login = r.getString("login");
+    return user;
+}
+db.registerMapper(User.class, mapper);
+</pre>
+                <p>
+                    Существует несколько техник, которые позволяют mJDBC автоматически находить необходимые реализации <i>DbMapper</i> для возвращаемых методами SQL интерфесов типов,
+                    делая их ручную регистрацию опциональной. Для этого, для возвращаемого типа <i>T</i> должно быть выполнено одно из следующих условий:
+                </p>
+                <ul class="spec-list">
+                    <li>Присутствует публичная статическая переменная с именем MAPPER и типом <i>DbMapper&lt;T&gt;</i></li>
+                    <li>Присутствует публичная статическая переменная с аннотацией <i>@Mapper</i> и типом <i>DbMapper&lt;T&gt;</i></li>
+                    <li>Присутствует публичная статическая функция с аннотацией <i>@Mapper</i>, принимаемым параметром <i>java.sql.ResultSet</i> и возвращаемым значением <i>T</i></li>
+                </ul>
+                <p>
+                    Автоматический поиск нужного экземпляра происходит в указанном выше порядке, при условии что для типа <i>T</i> нет экземпляра <i>DbMapper&lt;T&gt;</i> зарегистрированного в ручную.
+                </p>
+
             </section>
             <section id="GroupBatch" class="group">
                 <h3>Batch операции</h3>
