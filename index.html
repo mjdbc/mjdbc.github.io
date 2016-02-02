@@ -53,6 +53,7 @@
                     <li><i>Надежность</i> - используется в реальных проектах.</li>
                 </ul>
             </section>
+
             <section id="Install" class="group">
                 <h3>Установка</h3>
                 <div>
@@ -65,6 +66,7 @@
 &lt;/dependency&gt;</pre>
                 </div>
             </section>
+
             <section id="Examples" class="group">
                 <div id="InstallExample" class="subgroup">
                     <h3>Примеры использования</h3>
@@ -121,6 +123,7 @@ UserDbi userDbi = db.attachDbi(UserDbi.class, new UserDbiImpl());
 userDbi.registerUser(new User("root"));</pre>
                 </div>
             </section>
+
             <section id="Adapter" class="group">
                 <h3>Обзор mJDBC адаптера</h3>
                 <p>
@@ -168,6 +171,7 @@ void executeV(@NotNull  DbOpV op)
                 <pre class="prettyprint">
 Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
+
             <section id="Transactions" class="group">
                 <h3>Транзакции</h3>
                 mJDBC предоставляет следующий механизм поддержки транзакций:
@@ -207,6 +211,7 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     </i>
                 </p>
             </section>
+
             <section id="Sql" class="group">
                 <h3>SQL интерфейс</h3>
                 <p>
@@ -282,6 +287,7 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                 </p>
 
             </section>
+
             <section id="Binders" class="group">
                 <h3>SQL параметры</h3>
                 <p>
@@ -320,6 +326,7 @@ public interface DbBinder&lt;T&gt; {
                 <p>Проверка на полноту и корректность SQL параметров происходит в момент регистрации SQL-интерфейса.</p>
 
             </section>
+
             <section id="Mappers" class="group">
                 <h3>SQL результаты</h3>
                 <p>
@@ -360,17 +367,62 @@ db.registerMapper(User.class, mapper);
                 <p>
                     Повторные прямые вызовы метода <i>registerMapper</i> допускаются и приводят к регистрации нового обработчика <i>DbMapper</i> для указанного типа.
                 </p>
-
             </section>
+
             <section id="Batch" class="group">
                 <h3>Batch операции</h3>
+                <p>
+                    Batch операции используются для оптимизированного исполнения серии однотипных операций над базой данных. Например:
+                </p>
+                <pre class="prettyprint">@Sql("UPDATE users SET score = :score WHERE id = :id")
+void updateScore(@Bind("id") int[] ids, @Bind("score") int score);
+
+@Sql(&quot;UPDATE users SET score = :score WHERE id = :id&quot;)
+void updateScore(@BindBean List&lt;User&gt; users);
+
+@Sql(&quot;INSERT INTO users(login, score) VALUES (:login, :score)&quot;)
+void insertUsers(@BindBean List&lt;User&gt; users);</pre>
+                <p>
+                    При этом mJDBC использует один экземпляр <i>java.sql.PreparedStatement</i> с помощью которого исполняются стандартные JDBC
+                    <i>addBatch/executeBatch</i> операции.
+                </p>
+                <p>Количество вызовов метода <i>addBatch</i> перед каждым <i>executeBatch</i> задается параметром <i>batchChunkSize</i> аннотации <i>@Sql</i>.
+                    Значение по умолчанию для этого параметра: <i>Integer.MAX_VALUE</i>.</p>
+                <pre class="prettyprint">@Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
+     batchChunkSize = 100)
+void updateScore(@BindBean List&lt;User&gt; users);
+
+                </pre>
+                <p>
+                    Batch операции поддерживаются для параметров SQL-интерфейса описанных с использованием аннотаций <i>@Bind</i> и <i>@BindBean</i>.
+                    При этом допускается присутствие только одного batch-параметра в запросе.
+                </p>
+                <p>
+                    Batch-параметр определяется по принадлежности к одному из следующих типов: Java массив, <i>java.util.Iterable</i> или <i>java.util.Iterator</i>.
+                </p>
             </section>
+
             <section id="Profiling" class="group">
                 <h3>Профилировка</h3>
+                mJDBC отслеживает суммарное время исполнения и количество вызовов для всех зарегистрированных SQL-запросов и транзакционных методов.
+                Для доступа к этой информации используется метод
+                <pre class="prettyprint">@NotNull
+Map&lt;Method, DbTimer&gt; getTimers();
+</pre>
+                где <i>DbTimer</i> является следующей структурой:
+                <pre class="prettyprint">public final class DbTimer {
+    @NotNull
+    private final Method method;
+
+    protected volatile long invocationCount;
+
+    protected volatile long totalTimeInNanos;</pre>
             </section>
+
             <section id="LowLevelApi" class="group">
                 <h3>Низкоуровневый интерфейс</h3>
             </section>
+
             <section id="Recommendations" class="group">
                 <h3>Рекомендации</h3>
             </section>
