@@ -421,10 +421,90 @@ Map&lt;Method, DbTimer&gt; getTimers();
 
             <section id="LowLevelApi" class="group">
                 <h3>Низкоуровневый интерфейс</h3>
-            </section>
+                <div class="subgroup">
+                    <h4 id="DbOp">Транзакции</h4>
+                    <p>
+                        mJDBC позволяет работать с транзакциями и SQL запросами без использования транзакционных и SQL интерфейсов,
+                        что может быть удобно для небольших приложений, либо если текущий
+                        функционал интерфейсов mJDBC недостаточен.
+                    </p>
+                    <p>
+                        Для того, чтобы выполнить транзакционную SQL операцию без использования SQL интерфейса можно использовать одни из следующих методов mJDBC:
+                    </p>
+                <pre class="prettyprint">@Nullable
+&lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
 
+@NotNull
+&lt;T&gt; T executeNN(@NotNull DbOpNN&lt;T&gt; op);
+
+void executeV(@NotNull DbOpV op);</pre>
+                    <p>При вызове любого из этих методов имплементация интерфейса <i>DbOp</i> будет исполнена как отдельная транзакция,
+                        также как исполняется отдельный метод транзакционного интерфейса.</p>
+                <pre class="prettyprint">/**
+ * Database operation with @Nullable result.
+ */
+public interface DbOp&lt;T&gt; {
+    @Nullable
+    T run(@NotNull DbConnection c) throws Exception;
+}
+
+/**
+ * Database operation with no result.
+ */
+public interface DbOpV {
+    void run(@NotNull DbConnection c) throws Exception;
+}
+
+/**
+ * Database operation with @NotNull result.
+ */
+public interface DbOpNN&lt;T&gt; {
+    @NotNull
+    T run(@NotNull DbConnection c) throws Exception;
+}</pre>
+                    <p>Присутствие трех различных интерфейсов отличающихся лишь типом возвращаемого результата сделано для
+                        удобства использования и возможности использования статических анализаторов кода.</p>
+                    <p>Параметр <i>DbConnection</i> предоставляет прямой доступ к <i>java.sql.Connection</i>
+                        и используется mJDBC для использования совместно с классом <i>DbPreparedStatement</i> описанным ниже.</p>
+                    <p>В случае, если верхнеуровневый <i>DbOp.run</i> метод завершается без выбрасывания исключения, у текущей транзакции вызывается метод <i>commit</i>.
+                        Иначе вызывается метод <i>rollback</i>. Вложенные вызовы <i>execute(DbOp)</i> не приводят к созданию новых транзакций и встраиваются в
+                        транзакционный контекст вызывающего метода.</p>
+                </div>
+                <div class="subgroup">
+                    <h4 id="DbStatement">SQL запросы</h4>
+                    <p>
+                        Для создания SQL запросов без использования SQL интерфейса mJDBC предоставляет класс <i>DbPreparedStatement</i>. Этот класс является оболочкой и
+                        предоставляет полный доступ к <i>java.sql.PreparedStatement</i>, а также предоставляет следующий дополнительный функционал:
+                    </p>
+                    <ul class="spec-list">
+                        <li>Работа с именованными параметрами.</li>
+                        <li>Проверка коррекности привязки параметров на момент создания.</li>
+                        <li>Отображения результатов в Java объекты при помощи <i>DbMapper</i>.</li>
+                        <li>Автоматическое освобождение ресурсов при завершении транзакции/соединения.</li>
+                    </ul>
+                    <p>
+                        Примеры использования <i>DbPreparedStatement</i> совместно с <i>DbOp</i>:
+                    </p>
+                    <pre class="prettyprint">List&lt;User&gt; users = db.execute(c -&gt;
+    new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users&quot;, User.class)
+        .queryList());</pre>
+
+                                    <pre class="prettyprint">User user = db.execute(c -&gt;
+    new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users WHERE login = :login&quot;, User.class).set("login", "admin").query());</pre>
+                </div>
+                <p>Все операции с <i>DbPreparedStatement</i> выполненные внутри <i>DbOp</i> метода являются частью одной транзакции.
+                    Все связанные с ними ресурсы отслеживаются mJDBC и автоматически высвобождаются по завершении транзакции.</p>
+
+            </section>
             <section id="Recommendations" class="group">
                 <h3>Рекомендации</h3>
+                <ul class="spec-list">
+                    <li>Используйте примеры с открытым исходным кодом:
+                        <a href="https://github.com/mjdbc/mjdbc/tree/master/src/test/java/com/github/mjdbc/test" target="_blank">тесты</a>,
+                        <a href="https://github.com/mfursov/wicket7template/tree/master/src/main/java/com/github/mfursov/w7/db" target="_blank">другие проекты</a> на GitHub.
+                    </li>
+                    <li>Используйте пулы для соединения с базой данных. Пример: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
+                </ul>
             </section>
         </div>
         <!--Nav Bar -->
@@ -440,7 +520,12 @@ Map&lt;Method, DbTimer&gt; getTimers();
                 <li><a href="#Mappers">SQL результаты</a></li>
                 <li><a href="#Batch">Batch операции</a></li>
                 <li><a href="#Profiling">Профилировка</a></li>
-                <li><a href="#LowLevelApi">Низкоуровневый интерфейс</a></li>
+                <li><a href="#LowLevelApi">Низкоуровневый интерфейс</a>
+                    <ul class="nav nav-stacked">
+                        <li><a href="#DbOp">Транзакции</a></li>
+                        <li><a href="#DbStatement">SQL запросы</a></li>
+                    </ul>
+                </li>
                 <li><a href="#Recommendations">Рекомендации</a></li>
             </ul>
         </nav>
