@@ -30,8 +30,20 @@ body {
     font-size: 90px;
 }
 
+.logo-header-block {
+    display: inline-block;
+    position: relative;
+}
+
+.lang-switch-block {
+    text-shadow: 4px 3px 0 #000000, 9px 8px 0 rgba(0, 0, 0, 0.15);
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+}
+
 .logo-header sub {
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .header-text {
@@ -113,7 +125,6 @@ body {
     margin-left: 2px;
     font-style: normal;
 }
-
 
 .feature-list li {
     color: #555;

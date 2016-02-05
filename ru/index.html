@@ -10,7 +10,7 @@
     <title>mJDBC - small and efficient JDBC wrapper</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="site.css">
+    <link rel="stylesheet" href="../site.css">
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -23,10 +23,11 @@
 <div class="bs-docs-header" id="content" tabindex="-1">
     <div class="container">
         <div class="logo-header-block">
-            <div class="lang-switch-block"><a href="index.html" title="Switch to English">en</a> | <a href="./ru/index.html" title="Переключиться на русский">ru</a></div>
+            <div class="lang-switch-block"><a href="../index.html" title="Switch to English">en</a> | <a href="./index.html" title="Переключиться на русский">ru</a></div>
             <h1 class="logo-header">mJDBC<sub>v1.0.0</sub></h1>
         </div>
-        <div class="header-text">Small and efficient <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a> wrapper
+        <div class="header-text">компактная, простая и удобная библиотека для
+            <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a>
         </div>
         <div class="header-links-block">
             <a href="http://mvnrepository.com/artifact/com.github.mjdbc/mjdbc/1.0.0" class="btn btn-default btn-sm btn-header" target="_blank">Maven</a>
@@ -40,25 +41,26 @@
         <!--Main Content -->
         <div class="col-xs-9">
             <section id="About" class="group">
-                <h3>About</h3>
+                <h3>О библиотеке</h3>
                 <ul class="feature-list">
-                    <li><i>Small</i> - no external dependencies. Jar size is less than 50kb.</li>
-                    <li><i>Simple</i> - no special configuration required: 1 line of code to start.</li>
-                    <li><i>Reliable</i> - all SQL statements are parsed and validated during initialization.</li>
-                    <li><i>Flexible</i> - switch and use native JDBC interface directly when needed.</li>
-                    <li><i>Fast</i> - no runtime overhead when compared to JDBC.</li>
-                    <li><i>Transactional</i> - wrap any method into transaction.</li>
-                    <li><i>Optimized</i> - SQL connection is requested during first statement execution.</li>
-                    <li><i>Extensible</i> - add new data types or override the way built-in types are handled.</li>
-                    <li><i>Measurable</i> - profile timings for all SQL queries and transactions.</li>
-                    <li><i>Open</i> - fork the original code and change it.</li>
+                    <li><i>Компактность</i> - около 50кб, нет дополнительных зависимостей.</li>
+                    <li><i>Простота</i> - не нужно учить лишнее. Инициализация: от 1 строки кода.</li>
+                    <li><i>Надежность</i> - SQL запросы проверяются на момент старта приложения.</li>
+                    <li><i>Гибкость</i> - доступ к низкоуровневому функционалу JDBC.</li>
+                    <li><i>Производительность</i> - нет дополнительных вычислительных расходов по сравнению с JDBC.</li>
+                    <li><i>Транзакционность</i> - методы могут выполнять роль транзакций.</li>
+                    <li><i>Оптимизированность</i> - SQL соединение открывается в момент исполнения первого запроса.</li>
+                    <li><i>Расширяемость</i> - регистрация новых типов данных, переопределение существующих.</li>
+                    <li><i>Профилировка</i> - доступ метрикам исполнения запросов и транзакций.</li>
+                    <li><i>Открытость</i> - открытый исходный код: возможность изменять и исправлять.</li>
+                    <li><i>Надежность</i> - используется в реальных проектах.</li>
                 </ul>
             </section>
 
             <section id="Install" class="group">
-                <h3>Installation</h3>
+                <h3>Установка</h3>
                 <div>
-                    Add the following code to Maven project file:
+                    Добавьте следующий код в проектный файл Maven:
                     <pre class="prettyprint">
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.mjdbc&lt;/groupId&gt;
@@ -70,14 +72,14 @@
 
             <section id="Examples" class="group">
                 <div id="InstallExample" class="subgroup">
-                    <h3>Examples</h3>
-                    Example 1: SQL queries
+                    <h3>Примеры использования</h3>
+                    Пример 1: SQL запросы
                     <pre class="prettyprint">
-// Step 1: Create mJDBC adapter for java.sql.DataSource
+// Шаг 1: Создаем mJDBC адаптер для java.sql.DataSource
 java.sql.DataSource ds = ...;
 Db db = Db.newInstance(ds);
 
-// Step 2: Design SQL interface
+// Шаг 2: Описываем SQL интерфейс
 public interface UserSql {
     @Sql("INSERT INTO users(login) VALUES (:login)")
     int insertUser(@BindBean User user);
@@ -86,7 +88,7 @@ public interface UserSql {
     User getUserByLogin(@Bind("login") String login)
 }
 
-// Step 3: Define rules to map SQL results to Java objects
+// Шаг 3: Определяем правила считывания структур из ResultSet
 db.registerMapper(User.class, (r) -> {
     User user = new User();
     user.id = r.getInt("id");
@@ -95,20 +97,20 @@ db.registerMapper(User.class, (r) -> {
     return user;
 };)
 
-// Step 4: Get implementation for SQL interface
+// Шаг 4: Получаем реализацию SQL интерфейса
 UserSql userSql = db.attachSql(UserSql.class);
 
-// Step 5: Use SQL interface to perform queries
+// Шаг 5: Используем SQL интерфейс для исполнения запросов
 User user = userSql.getUserByLogin('login');</pre>
 
-                    Example 2: Transactions
+                    Пример 2: Транзакции
                     <pre class="prettyprint">
-// Step 1: Create an interface with transactional methods
+// Шаг 1: Создаем интерфейс с транзакционными методами
 public interface UserDbi {
     void registerUser(User user);
 }
 
-// Step 2: Implement the interface
+// Шаг 2: Имплементируем интерфейс
 public class UserDbiImpl implements UserDbi {
     public void registerUser(User user) {
         User copy = userSql.getUserByLogin(user.login);
@@ -117,16 +119,16 @@ public class UserDbiImpl implements UserDbi {
     }
 }
 
-// Step 3: Get proxy-adapter for the interface with transactions support
+// Шаг 3: Получаем транзакционный прокси-адаптер для интерфейса
 UserDbi userDbi = db.attachDbi(UserDbi.class, new UserDbiImpl());
 
-// Step 4: Use the adapter
+// Шаг 4: Используем адаптер для вызова методов имплементации
 userDbi.registerUser(new User("root"));</pre>
                 </div>
             </section>
 
             <section id="Adapter" class="group">
-                <h3>mJDBC adapter</h3>
+                <h3>Обзор mJDBC адаптера</h3>
                 <p>
                     Для того, чтобы начать использовать mJDBC необходимо создать адаптер типа <i>com.github.mjdbc.Db</i> поверх экземпляра <i>javax.sql.DataSource</i>.
                     Для этого нужно использовать статический метод-фабрику:</p>
@@ -511,23 +513,23 @@ public interface DbOpNN&lt;T&gt; {
         <!--Nav Bar -->
         <nav class="col-xs-3 bs-docs-sidebar">
             <ul id="sidebar" class="nav nav-stacked fixed">
-                <li><a href="#About">About</a></li>
-                <li><a href="#Install">Installation</a></li>
-                <li><a href="#Examples">Examples</a></li>
-                <li><a href="#Adapter">mJDBC adapter</a></li>
-                <li><a href="#Transactions">Transactions</a></li>
-                <li><a href="#Sql">SQL interfaces</a></li>
-                <li><a href="#Binders">SQL parameters</a></li>
-                <li><a href="#Mappers">SQL results</a></li>
-                <li><a href="#Batch">Batch operations</a></li>
-                <li><a href="#Profiling">Profiling</a></li>
-                <li><a href="#LowLevelApi">Low level API</a>
+                <li><a href="#About">О библиотеке</a></li>
+                <li><a href="#Install">Установка</a></li>
+                <li><a href="#Examples">Примеры использования</a></li>
+                <li><a href="#Adapter">Обзор mJDBC адаптера</a></li>
+                <li><a href="#Transactions">Транзакции</a></li>
+                <li><a href="#Sql">SQL интерфейс</a></li>
+                <li><a href="#Binders">SQL параметры</a></li>
+                <li><a href="#Mappers">SQL результаты</a></li>
+                <li><a href="#Batch">Batch операции</a></li>
+                <li><a href="#Profiling">Профилировка</a></li>
+                <li><a href="#LowLevelApi">Низкоуровневый интерфейс</a>
                     <ul class="nav nav-stacked">
-                        <li><a href="#DbOp">Transactions</a></li>
-                        <li><a href="#DbStatement">SQL queries</a></li>
+                        <li><a href="#DbOp">Транзакции</a></li>
+                        <li><a href="#DbStatement">SQL запросы</a></li>
                     </ul>
                 </li>
-                <li><a href="#Recommendations">Recommendations</a></li>
+                <li><a href="#Recommendations">Рекомендации</a></li>
             </ul>
         </nav>
     </div>
