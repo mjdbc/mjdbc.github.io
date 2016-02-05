@@ -23,7 +23,7 @@
 <div class="bs-docs-header" id="content" tabindex="-1">
     <div class="container">
         <div class="logo-header-block">
-            <div class="lang-switch-block"><a href="index.html" title="Switch to English">en</a> | <a href="./ru/index.html" title="Переключиться на русский">ru</a></div>
+            <div class="lang-switch-block"><a href="/" title="Switch to English">en</a> | <a href="/ru" title="Переключиться на русский">ru</a></div>
             <h1 class="logo-header">mJDBC<sub>v1.0.0</sub></h1>
         </div>
         <div class="header-text">Small and efficient <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a> wrapper
@@ -128,34 +128,47 @@ userDbi.registerUser(new User("root"));</pre>
             <section id="Adapter" class="group">
                 <h3>mJDBC adapter</h3>
                 <p>
-                    Для того, чтобы начать использовать mJDBC необходимо создать адаптер типа <i>com.github.mjdbc.Db</i> поверх экземпляра <i>javax.sql.DataSource</i>.
-                    Для этого нужно использовать статический метод-фабрику:</p>
+                    To start using mJDBC create an instance of <i>com.github.mjdbc.Db</i> providing <i>javax.sql.DataSource</i> object to the factory method:
+                </p>
                 <pre class="prettyprint">
 static Db newInstance(DataSource ds)</pre>
-                <p><a href="#Transactions"> Транзакционные интерфейсы</a> позволяют выполнить серию SQL-запросов как единую транзакцию давая гарантию, что либо все SQL операции внутри
-                    транзакции будут завершены успешено, либо ни одна из них не будет иметь эффект при завершении транзакции.
-                    Для регистрации транзакционных интерфейсов используйте следующий метод:
+                <p>
+                    <a href="#Transactions">Transactional interfaces</a> allows to execute multiple SQL requests within a single transaction: either all
+                    of SQL request inside transaction will succeed or no effect on database state will done at all.
+                </p>
+                <p>
+                    Any Java interface can be made transactional. To register the interface as transactional use the following method:
                 </p>
                 <pre class="prettyprint">
 &lt;T&gt; T attachDbi(T impl, Class&lt;T&gt; dbiInterface)</pre>
-                <p><a href="#Sql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
-                    Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов описанных в качестве @Sql аннотаций.
+                <p>
+                    <a href="#Sql">SQL interfaces</a> - is a way to create maintainable set of SQL queries that checked for correctness during the interface registration.
+                    SQL queries are written as <i>@Sql</i> annotations to methods and parameters are bound with <i>@Bind</i> and <i>@BindBean</i> classes.
+                    When SQL interface is registered in mJDBC it returns a Proxy for the interface with SQL queries checked and implemented.
+                </p>
                 <pre class="prettyprint">
 &lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface)</pre>
-                <p><a href="#Binders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder</i>,
-                    который обеспечивает отображение значения параметра в JDBC параметр для <i>java.sql.PreparedStatement</i></p>
+                <p>
+                    <a href="#Binders"></a>Set of supported SQL interface parameter types can be extended by custom Java types by creating and registering new <i>DbBinder&lt;T&gt;</i> implementations,
+                    which are responsible for Java objects mapping to parameters of <i>java.sql.PreparedStatement</i>
+                </p>
                 <pre class="prettyprint">
 &lt;T&gt; void registerBinder(Class&lt;? extends T&gt; binderClass, DbBinder&lt;T&gt; binder)</pre>
-                За <a href="#Mappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper</i>.
-                mJDBC поддерживает примитивные Java типы, JDBC типы и списки. Поддержка новых типов может быть расширена за счет использования следующего метода:
+                <p>
+                    <a href="#Mappers">Return values</a> for SQL interfaces are instantiated using corresponding <i>DbMapper&lt;T&gt;</i> instances.
+                    mJDBC supports by default primitive Java types, JDBC types and Java Lists. Support for custom return types can be added by using
+                    implementing and registering new <i>DbMapper&lt;T&gt;</i> instance using the following method:
+                </p>
                 <pre class="prettyprint">
 &lt;T&gt; void registerMapper(Class&lt;T&gt; mapperClass, DbMapper&lt;T&gt; mapper)</pre>
-                <p>Помимо создания транзакционных и SQL интерфейсов mJDBC позволяет создавать <a href="#LowLevelApi">прямые запросы</a> к базе.
-                    При этом вызванный метод будет обернут в транзакцию так, если бы использовался транзацкионный интерфейс.</p>
-                <p>Внутри у метода будет доступ как к управляемому JDBC соединению (<i>DbConnection</i>), так и к <i>DbPreparedStatement</i> классу который поддерживает
-                    работу с <i>DbBinder</i>/<i>DbMapper</i> и именованными параметрами. Помимо этого будет доступ к реальным JDBC объектам.</p>
-                <p>Все вызовы mJDBC аннотированы с <i>@Nullable</i>/<i>@NotNull</i> аннотациями для жесткого контроля работы с нулевыми значениями.
-                    Более того, операции которые могут и не могут возвращать нулевые значения разделены. </p>
+                <p>
+                    mJDBC provides <a href="#LowLevelApi">low level API</a> to create and run queries without SQL or transactional interfaces still
+                    utilising most of the benefits of mJDBC while having full access and control over JDBC objects.
+                </p>
+                <p>
+                    <i>@Nullable</i> and <i>@NotNull</i> annotations are used throughout all API for strict control over <i>null</i> values.
+                    Some API calls that may or may not return <i>null</i> are intentionally duplicated and users of the API are encouraged to follow null safety.
+                </p>
                 <pre class="prettyprint">
 @Nullable
 &lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op)
@@ -163,11 +176,11 @@ static Db newInstance(DataSource ds)</pre>
 @NotNull
 &lt;T&gt; T executeNN(@NotNull DbOpNN&lt;T&gt; op)
 
-void executeV(@NotNull  DbOpV op)
-                </pre>
+void executeV(@NotNull  DbOpV op)</pre>
                 <p>
-                    Доступ к простейшей <a href="#Profiling">профилировочной информации</a> о числе вызовов и суммарном времени исполнения транзационных методов и SQL-запросов
-                    можно получить используя метод <i>getTimers</i>:
+                    mJDBC automatically collects and provides simple <a href="#Profiling">profiling information</a> about
+                    number of calls and total time spent in methods of SQL and transactional interfaces.
+                    This information is available via <i>getTimers</i> method:
                 </p>
                 <pre class="prettyprint">
 Map&lt;Method, DbTimer&gt; getTimers()</pre>
@@ -227,8 +240,11 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     <li>Привязать параметры Java метода к параметрам SQL запроса используя <i>@Bind</i> и <i>@BindBean</i> аннотации.</li>
                     <li>Получить имплементацию описанного интерфейса у mJDBC.</li>
                 </ul>
-                Пример SQL интерфейса:
-                <pre class="prettyprint">public interface UserSql {
+                <p>
+                    Пример SQL интерфейса:
+                </p>
+                <pre class="prettyprint">
+public interface UserSql {
     @NotNull
     @GetGeneratedKeys
     @Sql("INSERT INTO users(login, first_name, last_name)
@@ -339,12 +355,14 @@ public interface DbBinder&lt;T&gt; {
                     Для того, чтобы расширить диапазон поддерживаемых типов необходимо зарегистрировать реализацию интерфейса <i>DbMapper</i>, которая из текущей позиции
                     <i>ResultSet</i> создаст и заполнит нужными значениями экземпляр возвращаемого объекта:
                 </p>
-                    <pre class="prettyprint">public interface DbMapper&lt;T&gt; {
+                    <pre class="prettyprint">
+public interface DbMapper&lt;T&gt; {
     T map(@NotNull java.sql.ResultSet r) throws SQLException;
 }</pre>
 
                 <p>Например: </p>
-                <pre class="prettyprint">DbMapper&lt;User&gt; mapper = (r) -&gt; {
+                <pre class="prettyprint">
+DbMapper&lt;User&gt; mapper = (r) -&gt; {
     User user = new User();
     user.id = new UserId(r.getInt("id"));
     user.login = r.getString("login");
@@ -375,7 +393,8 @@ db.registerMapper(User.class, mapper);
                 <p>
                     Batch операции используются для оптимизированного исполнения серии однотипных операций над базой данных. Например:
                 </p>
-                <pre class="prettyprint">@Sql("UPDATE users SET score = :score WHERE id = :id")
+                <pre class="prettyprint">
+@Sql("UPDATE users SET score = :score WHERE id = :id")
 void updateScore(@Bind("id") int[] ids, @Bind("score") int score);
 
 @Sql(&quot;UPDATE users SET score = :score WHERE id = :id&quot;)
@@ -389,7 +408,8 @@ void insertUsers(@BindBean List&lt;User&gt; users);</pre>
                 </p>
                 <p>Количество вызовов метода <i>addBatch</i> перед каждым <i>executeBatch</i> задается параметром <i>batchChunkSize</i> аннотации <i>@Sql</i>.
                     Значение по умолчанию для этого параметра: <i>Integer.MAX_VALUE</i>.</p>
-                <pre class="prettyprint">@Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
+                <pre class="prettyprint">
+@Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
      batchChunkSize = 100)
 void updateScore(@BindBean List&lt;User&gt; users);
 
@@ -407,11 +427,12 @@ void updateScore(@BindBean List&lt;User&gt; users);
                 <h3>Профилировка</h3>
                 mJDBC отслеживает суммарное время исполнения и количество вызовов для всех зарегистрированных SQL-запросов и транзакционных методов.
                 Для доступа к этой информации используется метод
-                <pre class="prettyprint">@NotNull
-Map&lt;Method, DbTimer&gt; getTimers();
-</pre>
+                <pre class="prettyprint">
+@NotNull
+Map&lt;Method, DbTimer&gt; getTimers();</pre>
                 где <i>DbTimer</i> является следующей структурой:
-                <pre class="prettyprint">public final class DbTimer {
+                <pre class="prettyprint">
+public final class DbTimer {
     @NotNull
     private final Method method;
 
@@ -432,7 +453,8 @@ Map&lt;Method, DbTimer&gt; getTimers();
                     <p>
                         Для того, чтобы выполнить транзакционную SQL операцию без использования SQL интерфейса можно использовать одни из следующих методов mJDBC:
                     </p>
-                <pre class="prettyprint">@Nullable
+                <pre class="prettyprint">
+@Nullable
 &lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
 
 @NotNull
@@ -441,7 +463,8 @@ Map&lt;Method, DbTimer&gt; getTimers();
 void executeV(@NotNull DbOpV op);</pre>
                     <p>При вызове любого из этих методов имплементация интерфейса <i>DbOp</i> будет исполнена как отдельная транзакция,
                         также как исполняется отдельный метод транзакционного интерфейса.</p>
-                <pre class="prettyprint">/**
+                <pre class="prettyprint">
+/**
  * Database operation with @Nullable result.
  */
 public interface DbOp&lt;T&gt; {
@@ -486,11 +509,13 @@ public interface DbOpNN&lt;T&gt; {
                     <p>
                         Примеры использования <i>DbPreparedStatement</i> совместно с <i>DbOp</i>:
                     </p>
-                    <pre class="prettyprint">List&lt;User&gt; users = db.execute(c -&gt;
+                    <pre class="prettyprint">
+List&lt;User&gt; users = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users&quot;, User.class)
         .queryList());</pre>
 
-                                    <pre class="prettyprint">User user = db.execute(c -&gt;
+            <pre class="prettyprint">
+User user = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users WHERE login = :login&quot;, User.class).set("login", "admin").query());</pre>
                 </div>
                 <p>Все операции с <i>DbPreparedStatement</i> выполненные внутри <i>DbOp</i> метода являются частью одной транзакции.
@@ -507,36 +532,36 @@ public interface DbOpNN&lt;T&gt; {
                     <li>Используйте пулы для соединения с базой данных. Пример: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
                 </ul>
             </section>
+            <!--Nav Bar -->
+            <nav class="col-xs-3 bs-docs-sidebar">
+                <ul id="sidebar" class="nav nav-stacked fixed">
+                    <li><a href="#About">About</a></li>
+                    <li><a href="#Install">Installation</a></li>
+                    <li><a href="#Examples">Examples</a></li>
+                    <li><a href="#Adapter">mJDBC adapter</a></li>
+                    <li><a href="#Transactions">Transactions</a></li>
+                    <li><a href="#Sql">SQL interfaces</a></li>
+                    <li><a href="#Binders">SQL parameters</a></li>
+                    <li><a href="#Mappers">SQL results</a></li>
+                    <li><a href="#Batch">Batch operations</a></li>
+                    <li><a href="#Profiling">Profiling</a></li>
+                    <li><a href="#LowLevelApi">Low level API</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#DbOp">Transactions</a></li>
+                            <li><a href="#DbStatement">SQL queries</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#Recommendations">Recommendations</a></li>
+                </ul>
+            </nav>
         </div>
-        <!--Nav Bar -->
-        <nav class="col-xs-3 bs-docs-sidebar">
-            <ul id="sidebar" class="nav nav-stacked fixed">
-                <li><a href="#About">About</a></li>
-                <li><a href="#Install">Installation</a></li>
-                <li><a href="#Examples">Examples</a></li>
-                <li><a href="#Adapter">mJDBC adapter</a></li>
-                <li><a href="#Transactions">Transactions</a></li>
-                <li><a href="#Sql">SQL interfaces</a></li>
-                <li><a href="#Binders">SQL parameters</a></li>
-                <li><a href="#Mappers">SQL results</a></li>
-                <li><a href="#Batch">Batch operations</a></li>
-                <li><a href="#Profiling">Profiling</a></li>
-                <li><a href="#LowLevelApi">Low level API</a>
-                    <ul class="nav nav-stacked">
-                        <li><a href="#DbOp">Transactions</a></li>
-                        <li><a href="#DbStatement">SQL queries</a></li>
-                    </ul>
-                </li>
-                <li><a href="#Recommendations">Recommendations</a></li>
-            </ul>
-        </nav>
     </div>
+    <script>
+        $('body').scrollspy({
+            target: '.bs-docs-sidebar',
+            offset: 40
+        });
+    </script>
 </div>
-<script>
-    $('body').scrollspy({
-        target: '.bs-docs-sidebar',
-        offset: 40
-    });
-</script>
 </body>
 </html>

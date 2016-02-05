@@ -23,7 +23,7 @@
 <div class="bs-docs-header" id="content" tabindex="-1">
     <div class="container">
         <div class="logo-header-block">
-            <div class="lang-switch-block"><a href="../index.html" title="Switch to English">en</a> | <a href="./index.html" title="Переключиться на русский">ru</a></div>
+            <div class="lang-switch-block"><a href="/" title="Switch to English">en</a> | <a href="/ru" title="Переключиться на русский">ru</a></div>
             <h1 class="logo-header">mJDBC<sub>v1.0.0</sub></h1>
         </div>
         <div class="header-text">компактная, простая и удобная библиотека для
@@ -141,14 +141,14 @@ static Db newInstance(DataSource ds)</pre>
                 <pre class="prettyprint">
 &lt;T&gt; T attachDbi(T impl, Class&lt;T&gt; dbiInterface)</pre>
                 <p><a href="#Sql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
-                    Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов описанных в качестве @Sql аннотаций.
+                    Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов изначально описанных в качестве <i>@Sql</i> аннотаций для методов интерфейса.
                 <pre class="prettyprint">
 &lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface)</pre>
-                <p><a href="#Binders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder</i>,
+                <p><a href="#Binders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder&lt;T&gt;</i>,
                     который обеспечивает отображение значения параметра в JDBC параметр для <i>java.sql.PreparedStatement</i></p>
                 <pre class="prettyprint">
 &lt;T&gt; void registerBinder(Class&lt;? extends T&gt; binderClass, DbBinder&lt;T&gt; binder)</pre>
-                За <a href="#Mappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper</i>.
+                За <a href="#Mappers">возвращаемые значения</a> SQL запросов отвечают зарегистрированные экземпляры класса <i>DbMapper&lt;T&gt;</i>.
                 mJDBC поддерживает примитивные Java типы, JDBC типы и списки. Поддержка новых типов может быть расширена за счет использования следующего метода:
                 <pre class="prettyprint">
 &lt;T&gt; void registerMapper(Class&lt;T&gt; mapperClass, DbMapper&lt;T&gt; mapper)</pre>
@@ -230,7 +230,8 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     <li>Получить имплементацию описанного интерфейса у mJDBC.</li>
                 </ul>
                 Пример SQL интерфейса:
-                <pre class="prettyprint">public interface UserSql {
+                <pre class="prettyprint">
+public interface UserSql {
     @NotNull
     @GetGeneratedKeys
     @Sql("INSERT INTO users(login, first_name, last_name)
@@ -341,12 +342,14 @@ public interface DbBinder&lt;T&gt; {
                     Для того, чтобы расширить диапазон поддерживаемых типов необходимо зарегистрировать реализацию интерфейса <i>DbMapper</i>, которая из текущей позиции
                     <i>ResultSet</i> создаст и заполнит нужными значениями экземпляр возвращаемого объекта:
                 </p>
-                    <pre class="prettyprint">public interface DbMapper&lt;T&gt; {
+                    <pre class="prettyprint">
+public interface DbMapper&lt;T&gt; {
     T map(@NotNull java.sql.ResultSet r) throws SQLException;
 }</pre>
 
                 <p>Например: </p>
-                <pre class="prettyprint">DbMapper&lt;User&gt; mapper = (r) -&gt; {
+                <pre class="prettyprint">
+DbMapper&lt;User&gt; mapper = (r) -&gt; {
     User user = new User();
     user.id = new UserId(r.getInt("id"));
     user.login = r.getString("login");
@@ -377,7 +380,8 @@ db.registerMapper(User.class, mapper);
                 <p>
                     Batch операции используются для оптимизированного исполнения серии однотипных операций над базой данных. Например:
                 </p>
-                <pre class="prettyprint">@Sql("UPDATE users SET score = :score WHERE id = :id")
+                <pre class="prettyprint">
+@Sql("UPDATE users SET score = :score WHERE id = :id")
 void updateScore(@Bind("id") int[] ids, @Bind("score") int score);
 
 @Sql(&quot;UPDATE users SET score = :score WHERE id = :id&quot;)
@@ -391,7 +395,8 @@ void insertUsers(@BindBean List&lt;User&gt; users);</pre>
                 </p>
                 <p>Количество вызовов метода <i>addBatch</i> перед каждым <i>executeBatch</i> задается параметром <i>batchChunkSize</i> аннотации <i>@Sql</i>.
                     Значение по умолчанию для этого параметра: <i>Integer.MAX_VALUE</i>.</p>
-                <pre class="prettyprint">@Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
+                <pre class="prettyprint">
+@Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
      batchChunkSize = 100)
 void updateScore(@BindBean List&lt;User&gt; users);
 
@@ -409,11 +414,13 @@ void updateScore(@BindBean List&lt;User&gt; users);
                 <h3>Профилировка</h3>
                 mJDBC отслеживает суммарное время исполнения и количество вызовов для всех зарегистрированных SQL-запросов и транзакционных методов.
                 Для доступа к этой информации используется метод
-                <pre class="prettyprint">@NotNull
+                <pre class="prettyprint">
+@NotNull
 Map&lt;Method, DbTimer&gt; getTimers();
 </pre>
                 где <i>DbTimer</i> является следующей структурой:
-                <pre class="prettyprint">public final class DbTimer {
+                <pre class="prettyprint">
+public final class DbTimer {
     @NotNull
     private final Method method;
 
@@ -434,7 +441,8 @@ Map&lt;Method, DbTimer&gt; getTimers();
                     <p>
                         Для того, чтобы выполнить транзакционную SQL операцию без использования SQL интерфейса можно использовать одни из следующих методов mJDBC:
                     </p>
-                <pre class="prettyprint">@Nullable
+                <pre class="prettyprint">
+@Nullable
 &lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
 
 @NotNull
@@ -443,7 +451,8 @@ Map&lt;Method, DbTimer&gt; getTimers();
 void executeV(@NotNull DbOpV op);</pre>
                     <p>При вызове любого из этих методов имплементация интерфейса <i>DbOp</i> будет исполнена как отдельная транзакция,
                         также как исполняется отдельный метод транзакционного интерфейса.</p>
-                <pre class="prettyprint">/**
+                <pre class="prettyprint">
+/**
  * Database operation with @Nullable result.
  */
 public interface DbOp&lt;T&gt; {
@@ -488,11 +497,13 @@ public interface DbOpNN&lt;T&gt; {
                     <p>
                         Примеры использования <i>DbPreparedStatement</i> совместно с <i>DbOp</i>:
                     </p>
-                    <pre class="prettyprint">List&lt;User&gt; users = db.execute(c -&gt;
+                    <pre class="prettyprint">
+List&lt;User&gt; users = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users&quot;, User.class)
         .queryList());</pre>
 
-                                    <pre class="prettyprint">User user = db.execute(c -&gt;
+                    <pre class="prettyprint">
+User user = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users WHERE login = :login&quot;, User.class).set("login", "admin").query());</pre>
                 </div>
                 <p>Все операции с <i>DbPreparedStatement</i> выполненные внутри <i>DbOp</i> метода являются частью одной транзакции.
