@@ -187,27 +187,28 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
 
             <section id="Transactions" class="group">
-                <h3>Транзакции</h3>
-                mJDBC предоставляет следующий механизм поддержки транзакций:
+                <h3>Transactions</h3>
+                mJDBC supports the following pattern for transactions:
                 <ul class="spec-list">
-                    <li>Разработчик описывает и имплементирует Java интерфейс</li>
-                    <li>mJDBC предоставляет свою прокси-имплементацию этого интерфейса, при вызове методов которого
-                        создаются транзакции и вызывается оригинальная имплементация
+                    <li>A developer defines and implement some Java interface.</li>
+                    <li>mJDBC provides proxy-implementation for the given interface to manage transactional context on each interface method call
+                        and forward all calls to the original implementation.
                     </li>
-                    <li>Разработчик работает с proxy-имплементацией своего интерфейса.</li>
+                    <li>The developer should use the proxy implementation for the interface provided by mJDBC.</li>
                 </ul>
                 <p>
-                    Каждый метод интерфейса представляет из себя отдельную транзакцию: метод <i>commit</i> для транзакции вызывается при успешном завершении метода.
-                    Метод <i>rollback</i> - если имплементация производит исключение.
+                    Every method of the interface is a separate transaction: <i>commit</i> for is called after successful method call, <i>rollback</i> in case
+                    if exception was thrown.
                 </p>
                 <p>
-                    В случае, если один транзакционный метод вызывает другой транзакционный метод, новой транзакции не создается.
-                    Вызванный метод становится частью верхнеуровневой транзакции.
+                    No new transaction created if one transactional interface method is called from within another.
+                    The method called becomes a part of the upper-level transaction.
                 </p>
                 <p>
-                    Реализация транзакций mJDBC устроена так, что реальная транзакция, так же как и запрос соединения и <i>java.sql.DataSource</i> происходит не в момент вызова прокси-метода,
-                    а при первом реальном исполнении SQL. Таким образом, вызовы которые не производят операций с базой, например, используют кэш или проверяют аргументы и
-                    возвращают код ошибки, выполняются значительно быстрее.
+                    Implementation of transactions in mJDBC works the way that the real transaction as well as SQL connection request from <i>java.sql.DataSource</i>
+                    occurs not during a call of the proxy method, but only during execution of the first real SQL call.
+                    This way the methods of transactional interface that do not run any operations over database: use cache or trigger exceptions on arguments check
+                    are executed without any database related overhead.
                 </p>
                 <p>
                     Транзакционные интерфейсы ничем не отличаются от обычных Java интерфейсов: mJDBC не требует наследования маркерных интерфейсов или наличия аннотаций.
