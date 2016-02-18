@@ -141,7 +141,7 @@ static Db newInstance(DataSource ds)</pre>
                 <pre class="prettyprint">
 &lt;T&gt; T attachDbi(T impl, Class&lt;T&gt; dbiInterface)</pre>
                 <p><a href="#Sql">SQL интерфейсы</a> - выразительный способ описывать SQL запросы проверяемые на корректность на момент регистрации интерфейса.
-                    Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов изначально описанных в качестве <i>@Sql</i> аннотаций для методов интерфейса.
+                    Метод регистрации интерфейса возвращает Proxy-класс с реализацией SQL методов изначально описанных в качестве <i>@Sql</i> аннотаций для методов интерфейса.</p>
                 <pre class="prettyprint">
 &lt;T&gt; T attachSql(Class&lt;T&gt; sqlInterface)</pre>
                 <p><a href="#Binders">Типы параметров</a> для SQL интерфейсов могут быть расширены при помощи регистрации реализаций интерфейса <i>DbBinder&lt;T&gt;</i>,
@@ -510,6 +510,7 @@ User user = db.execute(c -&gt;
                     Все связанные с ними ресурсы отслеживаются mJDBC и автоматически высвобождаются по завершении транзакции.</p>
 
             </section>
+
             <section id="Recommendations" class="group">
                 <h3>Рекомендации</h3>
                 <ul class="spec-list">
@@ -520,6 +521,7 @@ User user = db.execute(c -&gt;
                     <li>Используйте пулы для соединения с базой данных. Пример: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
                 </ul>
             </section>
+
         </div>
         <!--Nav Bar -->
         <nav class="col-xs-3 bs-docs-sidebar">
@@ -545,11 +547,13 @@ User user = db.execute(c -&gt;
         </nav>
     </div>
 </div>
+
 <script>
     $('body').scrollspy({
         target: '.bs-docs-sidebar',
         offset: 40
     });
 </script>
+
 </body>
 </html>

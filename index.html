@@ -211,14 +211,14 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
                     are executed without any database related overhead.
                 </p>
                 <p>
-                    Транзакционные интерфейсы ничем не отличаются от обычных Java интерфейсов: mJDBC не требует наследования маркерных интерфейсов или наличия аннотаций.
-                    Для получения имплементации транзакционного интерфейса необходимо зарегистрировать его и его имплементацию при помощи вызова:
+                    Transactional interfaces are simple Java interfaces: mJDBC does not require extending marker interfaces or use special annotations.
+                    To get proxy implementation for a transactional interface the interface and its implementation must be registered using the following mJDBC call:
                 </p>
                 <pre class="prettyprint">
 @NotNull
 &lt;T&gt; T attachDbi(@NotNull T impl, @NotNull Class&lt;T&gt; dbiInterface)</pre>
-                <p>Сокращение <i>dbi</i> здесь означает: database interface.</p>
-                <p> Пример использования транзакционного dbi интерфейса:
+                <p>The <i>dbi</i> prefix here stands for "database interface".</p>
+                <p> Examples of transactional interfaces:
                     <i>
                         <a href="https://github.com/mjdbc/mjdbc/blob/master/src/test/java/com/github/mjdbc/test/asset/dbi/SampleDbi.java" target="_blank" class="nw">SampleDbi</a>,
                         <a href="https://github.com/mjdbc/mjdbc/blob/master/src/test/java/com/github/mjdbc/test/asset/dbi/SampleDbiImpl.java" target="_blank" class="nw">SampleDbiImpl</a>,
@@ -523,6 +523,7 @@ User user = db.execute(c -&gt;
                     Все связанные с ними ресурсы отслеживаются mJDBC и автоматически высвобождаются по завершении транзакции.</p>
 
             </section>
+
             <section id="Recommendations" class="group">
                 <h3>Рекомендации</h3>
                 <ul class="spec-list">
@@ -533,36 +534,39 @@ User user = db.execute(c -&gt;
                     <li>Используйте пулы для соединения с базой данных. Пример: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
                 </ul>
             </section>
-            <!--Nav Bar -->
-            <nav class="col-xs-3 bs-docs-sidebar">
-                <ul id="sidebar" class="nav nav-stacked fixed">
-                    <li><a href="#About">About</a></li>
-                    <li><a href="#Install">Installation</a></li>
-                    <li><a href="#Examples">Examples</a></li>
-                    <li><a href="#Adapter">mJDBC adapter</a></li>
-                    <li><a href="#Transactions">Transactions</a></li>
-                    <li><a href="#Sql">SQL interfaces</a></li>
-                    <li><a href="#Binders">SQL parameters</a></li>
-                    <li><a href="#Mappers">SQL results</a></li>
-                    <li><a href="#Batch">Batch operations</a></li>
-                    <li><a href="#Profiling">Profiling</a></li>
-                    <li><a href="#LowLevelApi">Low level API</a>
-                        <ul class="nav nav-stacked">
-                            <li><a href="#DbOp">Transactions</a></li>
-                            <li><a href="#DbStatement">SQL queries</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#Recommendations">Recommendations</a></li>
-                </ul>
-            </nav>
+
         </div>
+        <!--Nav Bar -->
+        <nav class="col-xs-3 bs-docs-sidebar">
+            <ul id="sidebar" class="nav nav-stacked fixed">
+                <li><a href="#About">About</a></li>
+                <li><a href="#Install">Installation</a></li>
+                <li><a href="#Examples">Examples</a></li>
+                <li><a href="#Adapter">mJDBC adapter</a></li>
+                <li><a href="#Transactions">Transactions</a></li>
+                <li><a href="#Sql">SQL interfaces</a></li>
+                <li><a href="#Binders">SQL parameters</a></li>
+                <li><a href="#Mappers">SQL results</a></li>
+                <li><a href="#Batch">Batch operations</a></li>
+                <li><a href="#Profiling">Profiling</a></li>
+                <li><a href="#LowLevelApi">Low level API</a>
+                    <ul class="nav nav-stacked">
+                        <li><a href="#DbOp">Transactions</a></li>
+                        <li><a href="#DbStatement">SQL queries</a></li>
+                    </ul>
+                </li>
+                <li><a href="#Recommendations">Recommendations</a></li>
+            </ul>
+        </nav>
     </div>
-    <script>
-        $('body').scrollspy({
-            target: '.bs-docs-sidebar',
-            offset: 40
-        });
-    </script>
 </div>
+
+<script>
+    $('body').scrollspy({
+        target: '.bs-docs-sidebar',
+        offset: 40
+    });
+</script>
+
 </body>
 </html>
