@@ -228,21 +228,22 @@ Map&lt;Method, DbTimer&gt; getTimers()</pre>
             </section>
 
             <section id="Sql" class="group">
-                <h3>SQL интерфейс</h3>
+                <h3>SQL interfaces</h3>
                 <p>
-                    SQL интерфейс - это Java интерфейс, где каждый метод является отдельным SQL запросом. mJDBC создает готовую к использованию имплементацию для таких интерфейсов.
-                    Разработчик использует созданную mJDBC имплементацию для исполнения операций с базой данных вызывая методы интерфейса.</p>
+                    SQL interface is a Java interface with every method associated with a single SQL request.
+                    mJDBC provides implementation for SQL interface methods and handles method parameters and results mappings.
+                </p>
                 <p>
-                    Для того, чтобы описать SQL интерфейс нужно:
+                    To create new SQL interface:
                 </p>
                 <ul class="spec-list">
-                    <li>Создать обычный Java интерфейс, где каждый метод будет соответствовать одному SQL запросу.</li>
-                    <li>Написать для каждого метода реальный SQL запрос на языке используемой базы данных и поместить этот запрос в виде аннотации <i>@Sql</i> к методу.</li>
-                    <li>Привязать параметры Java метода к параметрам SQL запроса используя <i>@Bind</i> и <i>@BindBean</i> аннотации.</li>
-                    <li>Получить имплементацию описанного интерфейса у mJDBC.</li>
+                    <li>Create usual Java interface. Each method will be associated with SQL request.</li>
+                    <li>Add native SQL query as <i>@Sql</i> annotation for every method.</li>
+                    <li>Bind Java method parameters to named SQL parameters using <i>@Bind</i> or <i>@BindBean</i> annotations.</li>
+                    <li>Get the interface implementation from mJDBC and use it to execute SQL queries.</li>
                 </ul>
                 <p>
-                    Пример SQL интерфейса:
+                    SQL interface example:
                 </p>
                 <pre class="prettyprint">
 public interface UserSql {
@@ -264,14 +265,15 @@ public interface UserSql {
     int countUsers();
 }</pre>
                 <p>
-                    Для того, чтобы получить реализацию этого интерфейса следует вызвать следующий метод mJDBC:
+                    To obtain SQL interface implementation use the following method:
                 </p>
                 <pre class="prettyprint">
 @NotNull
 &lt;T&gt; T attachSql(@NotNull Class &lt;T&gt; sqlInterface);
 </pre>
                 <p>
-                    При этом произойдет парсинг и проверка запроса на предмет корректности подстановки параметров и возвращаемых значений.
+                    During this method call mJDBC will parse and check that all named SQL parameters used in the request are present
+                    and types of parameters and return value are supported.
                 </p>
                 <p>
                     Подставляемые параметры в SQL запросе именованы и имеют префикс к имени в виде двоеточия: ':'.
