@@ -272,20 +272,19 @@ public interface UserSql {
 &lt;T&gt; T attachSql(@NotNull Class &lt;T&gt; sqlInterface);
 </pre>
                 <p>
-                    During this method call mJDBC will parse and check that all named SQL parameters used in the request are present
+                    During this method call mJDBC will parse and check that all SQL parameters used in the request are present
                     and types of parameters and return value are supported.
                 </p>
                 <p>
-                    Подставляемые параметры в SQL запросе именованы и имеют префикс к имени в виде двоеточия: ':'.
+                    All SQL parameters are named and are bound to Java parameters by their names. All names are prefixed with ':' symbol in SQL.
                 </p>
                 <p>
-                    Соответствие SQL и Java параметров строится по их именам. Для этого для Java параметров используется аннотация <i>@Bind</i>
-                    в которой указывается имя соответствующего SQL параметра. Также, для объектных типов возможно использование аннотации @BindBean:
-                    в этом случае в качестве параметров SQL будут подставлены имена и значения полей Java объекта.
-                    Поля объекта должны быть публичными, либо иметь публичные <i>get</i>-методы.
+                    <i>@Bind</i> annotation is used to bind SQL parameters to Java method parameters. The annotation holds a name for corresponding
+                    parameter in SQL query. <i>@BindBean</i> annotation is an alternative for <i>@Bind</i>: if used all parameters are derived from annotated
+                    Java object fields. These fields must be public or have a public <i>get</i> methods.
                 </p>
                 <p>
-                    Исполнение каждого SQL запроса приведет к созданию и исполнению <i>java.sql.PreparedStatement</i>. При этом, для параметров имеющих базовые
+                    For each SQL interface method mJDBC creates a separate <i>java.sql.PreparedStatement</i> object. При этом, для параметров имеющих базовые
                     Java или JDBC типы вызовется соответствующий метод из PreparedStatement. Для того, чтобы в качестве параметров использовать свои собственные
                     типы данных необходимо зарегистрировать в mJDBC механизм отображения параметров в виде имплементации класса
                     <a href="#Binders"> <i>DbBinder</i></a>, либо унаследовать интерфейс описывающий поддерживаемый mJDBC тип:
