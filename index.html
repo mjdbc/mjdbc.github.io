@@ -284,10 +284,10 @@ public interface UserSql {
                     Java object fields. These fields must be public or have a public <i>get</i> methods.
                 </p>
                 <p>
-                    For each SQL interface method mJDBC creates a separate <i>java.sql.PreparedStatement</i> object. При этом, для параметров имеющих базовые
-                    Java или JDBC типы вызовется соответствующий метод из PreparedStatement. Для того, чтобы в качестве параметров использовать свои собственные
-                    типы данных необходимо зарегистрировать в mJDBC механизм отображения параметров в виде имплементации класса
-                    <a href="#Binders"> <i>DbBinder</i></a>, либо унаследовать интерфейс описывающий поддерживаемый mJDBC тип:
+                    mJDBC creates a separate <i>java.sql.PreparedStatement</i> object for each SQL interface method.
+                    To bind Java or standard JDBC parameter types mJDBC calls corresponding methods of PreparedStatement object.
+                    In order to use custom data types as SQL parameters there is a special API to register parameter binder class instances:
+                    <a href="#Binders"> <i>DbBinder</i></a>, or implement interface for special set of additional data types supported by mJDBC:
                     <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbInt.java" target="_blank" class="nw"><i>DbInt</i></a>,
                     <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbString.java" target="_blank" class="nw"><i>DbString</i></a> etc.
                 </p>
