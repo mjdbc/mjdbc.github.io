@@ -297,7 +297,7 @@ public interface UserSql {
                 <h3>SQL параметры</h3>
                 <p>
                     Для работы с параметрами <a href="#Sql">SQL интерфейса</a> используются интерфейс <i>DbBinder</i> и аннотации <i>@Bind</i> и <i>@BindBean</i>.
-                    Интерфейс DbBinder описывает как параметр указанного Java типа должен быть сериализован в качестве параметра <i>java.sql.PreparedStatements</i>:
+                    Интерфейс <i>DbBinder</i> описывает как параметр указанного Java типа должен быть сериализован в качестве параметра <i>java.sql.PreparedStatements</i>:
                 </p>
                 <pre class="prettyprint">
 public interface DbBinder&lt;T&gt; {
@@ -318,7 +318,7 @@ public interface DbBinder&lt;T&gt; {
                 <pre class="prettyprint">
 &lt;T&gt; void registerBinder(Class&lt;? extends T&gt; binderClass, DbBinder&lt;T&gt; binder)</pre>
                 <p>
-                    Аннотация <i>@Bind</i> используется для указания точного имени параметра <i>java.sql.PreparedStatement</i>.
+                    Аннотация <i>@Bind</i> используется для указания точного имени параметра, как указано в SQL запросе.
                 </p>
                 <p>
                     Аннотация <i>@BindBean</i> говорит о том, что имена параметров должны совпадать с именами публичных полей или <i>get</i>-методов объекта.

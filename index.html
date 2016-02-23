@@ -309,41 +309,41 @@ public interface UserSql {
             </section>
 
             <section id="Binders" class="group">
-                <h3>SQL параметры</h3>
+                <h3>SQL parameters</h3>
                 <p>
-                    Для работы с параметрами <a href="#Sql">SQL интерфейса</a> используются интерфейс <i>DbBinder</i> и аннотации <i>@Bind</i> и <i>@BindBean</i>.
-                    Интерфейс DbBinder описывает как параметр указанного Java типа должен быть сериализован в качестве параметра <i>java.sql.PreparedStatements</i>:
+                    To handle <a href="#Sql">SQL interface</a> parameters mJDBC uses <i>DbBinder</i> interface and <i>@Bind</i> / <i>@BindBean</i> annotations.
+                    <i>DbBinder</i> interface defines the way Java type is converted to the real <i>java.sql.PreparedStatements</i> parameter:
                 </p>
                 <pre class="prettyprint">
 public interface DbBinder&lt;T&gt; {
     void bind(PreparedStatement statement, int idx, T value)
 }</pre>
-                <p>При исполнении SQL-запроса mJDBC автоматически подбирает подходящую реализацию <i>DbBinder</i> из набора всех зарегистрированных.
-                    При этом, приоритет поиска <i>DbBinder</i> следующий:</p>
+                <p>When executing SQL query mJDBC automatically selects correct <i>DbBinder</i> from the set of registered binders.
+                    The priority of <i>DbBinder</i> selection is the following:</p>
                 <ul class="spec-list">
-                    <li>Точное совпадение с типом класса параметра.</li>
-                    <li>Точное совпадение с типом родительского класса параметра.</li>
-                    <li>Совпадение с одним из имплементированных интерфейсов.</li>
+                    <li>Same type as parameter type.</li>
+                    <li>Same type as parameter parent type.</li>
+                    <li>Same type with one of the parameter extended interfaces.</li>
                 </ul>
                 <p>
-                    При наличии более одного подходящего интерфейса производится исключение: <i>java.lang.IllegalArgumentException.</i>
-                    Процесс подбора <i>DbBinder</i> происходит на момент регистрации SQL интерфейса в mJDBC.
+                    If more than one interface is found mJDBC will throw <i>java.lang.IllegalArgumentException.</i>
+                    <i>DbBinder</i> are resolved for all parameters during SQL interface registration call.
                 </p>
-                <p>Для регистрации новых реализаций <i>DbBinder</i> используется метод</p>
+                <p>To register new <i>DbBinder</i> implementation use the following method</p>
                 <pre class="prettyprint">
 &lt;T&gt; void registerBinder(Class&lt;? extends T&gt; binderClass, DbBinder&lt;T&gt; binder)</pre>
                 <p>
-                    Аннотация <i>@Bind</i> используется для указания точного имени параметра <i>java.sql.PreparedStatement</i>.
+                    <i>@Bind</i> annotation used to specify a name of the annotated parameter as used in SQL request.
                 </p>
                 <p>
-                    Аннотация <i>@BindBean</i> говорит о том, что имена параметров должны совпадать с именами публичных полей или <i>get</i>-методов объекта.
-                    В текущей версии mJDBC параметр описанный при помощи <i>@BindBean</i> должен быть единственным параметром интерфейса.
+                    <i>@BindBean</i> annotation enforces mJDBC to bind all SQL parameter to public object field names or getter methods.
+                    Today <i>@BindBean</i> parameter must be the only parameter of the method.
                 </p>
                 <p>
-                    В случае, если SQL запрос содержит больше именованных параметров, чем доступно из данных <i>@Bind</i> и <i>@BindBean</i> аннотаций,
-                    производится исключение. Лишние параметры со стороны Java игнорируются. Имена параметров могут содержать только символы Java идентификаторов.
+                    In case if SQL statement contains more named parameters than can be resolved from method parameters annotated with <i>@Bind</i> or <i>@BindBean</i>
+                    an exception is thrown. Unused <i>@Bind</i> and <i>@BindBean</i> parameters are ignored. The names of parameters are validated to be valid Java identifiers.
                 </p>
-                <p>Проверка на полноту и корректность SQL параметров происходит в момент регистрации SQL-интерфейса.</p>
+                <p>mJDBC verifies that all SQL statement parameters are correctly mapped is performed during SQL interface registration.</p>
 
             </section>
 
@@ -424,6 +424,7 @@ void updateScore(@BindBean List&lt;User&gt; users);
                 <p>
                     Batch-параметр определяется по принадлежности к одному из следующих типов: Java массив, <i>java.util.Iterable</i> или <i>java.util.Iterator</i>.
                 </p>
+
             </section>
 
             <section id="Profiling" class="group">
