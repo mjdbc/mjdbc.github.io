@@ -292,17 +292,18 @@ public interface UserSql {
                     <a href="https://github.com/mjdbc/mjdbc/blob/master/src/main/java/com/github/mjdbc/type/DbString.java" target="_blank" class="nw"><i>DbString</i></a> etc.
                 </p>
                 <p>
-                    В случае, если SQL запрос возвращает нестандартный тип данных необходимо зарегистрировать его отображение из <i>java.sql.ResultSet</i> при помощи
-                    реализации класса <a href="#Mappers"><i>DbMapper</i></a>. Списки (<i>java.util.List</i>) и базовые Java и JDBC типы поддерживаются
-                    mJDBC автоматически.
+                    To enable support for custom non-Java or non-JDBC return type for SQL interface methods implement and register <a href="#Mappers"><i>DbMapper</i></a> class.
+                    This class will be used by mJDBC to map a single <i>java.sql.ResultSet</i> row into an instance of user defined type.
+                    Lists (<i>java.util.List</i>) and basic Java and JDBC types are supported by mJDBC by default.
                 </p>
                 <p>
-                    Для возврата авто-генерируемого значения, можно использовать аннотацию <i>@GetGeneratedKeys</i>.
-                    Использование <i>@GetGeneratedKeys</i> в коде не обязательно для запросов начинающихся с префикса "INSERT ":
-                    для них возврат генерируемого значения происходит по умолчанию.
+                    To return auto-generated SQL value use <i>@GetGeneratedKeys</i> annotation for SQL method.
+                    Use of <i>@GetGeneratedKeys</i> is optional for SQL statements that starts from "INSERT " prefix:
+                    mJDBC will apply <i>@GetGeneratedKeys</i> to them automatically.
                 </p>
                 <p>
-                    В случае, если Java параметр является коллекцией, итератором или массивом, вместо одного запроса будет выполнена серия <a href="#Batch">batch-запросов</a>.
+                    In case if Java parameter is iterator (<i>java.util.Iterator</i>),
+                    collection (<i>java.util.Iterable</i>) or Java <i>array</i> instance mJDBC will use <a href="#Batch">batch mode</a> to execute the query.
                 </p>
 
             </section>
