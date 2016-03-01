@@ -392,9 +392,9 @@ db.registerMapper(User.class, mapper);
             </section>
 
             <section id="Batch" class="group">
-                <h3>Batch операции</h3>
+                <h3>Batch operations</h3>
                 <p>
-                    Batch операции используются для оптимизированного исполнения серии однотипных операций над базой данных. Например:
+                    Batch operations are used to optimize a series of identical parametrized database updates. Example:
                 </p>
                 <pre class="prettyprint">
 @Sql("UPDATE users SET score = :score WHERE id = :id")
@@ -406,11 +406,12 @@ void updateScore(@BindBean List&lt;User&gt; users);
 @Sql(&quot;INSERT INTO users(login, score) VALUES (:login, :score)&quot;)
 void insertUsers(@BindBean List&lt;User&gt; users);</pre>
                 <p>
-                    При этом mJDBC использует один экземпляр <i>java.sql.PreparedStatement</i> с помощью которого исполняются стандартные JDBC
-                    <i>addBatch/executeBatch</i> операции.
+                    With batch operations mJDBC uses a single instance of <i>java.sql.PreparedStatement</i> object to
+                    execute the whole series of updates and utilizes <i>addBatch/executeBatch</i> JDBC API.
                 </p>
-                <p>Количество вызовов метода <i>addBatch</i> перед каждым <i>executeBatch</i> задается параметром <i>batchChunkSize</i> аннотации <i>@Sql</i>.
-                    Значение по умолчанию для этого параметра: <i>Integer.MAX_VALUE</i>.</p>
+                <p>Count of <i>addBatch</i> methods invocations before <i>executeBatch</i> call can be set up by <i>batchChunkSize</i>
+                    parameter of <i>@Sql</i> annotation. Default value for this parameter is <i>Integer.MAX_VALUE</i>.
+                    It means that mJDBC will try to put all data into a single batch update by default.</p>
                 <pre class="prettyprint">
 @Sql(value = &quot;UPDATE users SET score = :score WHERE id = :id&quot;,
      batchChunkSize = 100)
@@ -418,13 +419,13 @@ void updateScore(@BindBean List&lt;User&gt; users);
 
                 </pre>
                 <p>
-                    Batch операции поддерживаются для параметров SQL-интерфейса описанных с использованием аннотаций <i>@Bind</i> и <i>@BindBean</i>.
-                    При этом допускается присутствие только одного batch-параметра в запросе.
+                    mJDBC detects batch parameters by their types: the following Java types are considered as batch parameters:
+                    Java arrays, <i>java.util.Iterable</i> and <i>java.util.Iterator</i>.
                 </p>
                 <p>
-                    Batch-параметр определяется по принадлежности к одному из следующих типов: Java массив, <i>java.util.Iterable</i> или <i>java.util.Iterator</i>.
+                    Batch parameters are mapped to native named SQL parameters like regular parameters with <i>@Bind</i> и <i>@BindBean</i> annotations.
+                    The only restriction for batch parameters: only 1 batch parameter per <i>@SQL</i> query is allowed.
                 </p>
-
             </section>
 
             <section id="Profiling" class="group">
