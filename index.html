@@ -429,13 +429,13 @@ void updateScore(@BindBean List&lt;User&gt; users);
             </section>
 
             <section id="Profiling" class="group">
-                <h3>Профилировка</h3>
-                mJDBC отслеживает суммарное время исполнения и количество вызовов для всех зарегистрированных SQL-запросов и транзакционных методов.
-                Для доступа к этой информации используется метод
+                <h3>Profiling</h3>
+                mJDBC tracks total execution time and number of calls for registered SQL interfaces and transactional methods.
+                To access profiling information use:
                 <pre class="prettyprint">
 @NotNull
 Map&lt;Method, DbTimer&gt; getTimers();</pre>
-                где <i>DbTimer</i> является следующей структурой:
+                where <i>DbTimer</i> is the following structure:
                 <pre class="prettyprint">
 public final class DbTimer {
     @NotNull
@@ -447,9 +447,9 @@ public final class DbTimer {
             </section>
 
             <section id="LowLevelApi" class="group">
-                <h3>Низкоуровневый интерфейс</h3>
+                <h3>Low level API</h3>
                 <div class="subgroup">
-                    <h4 id="DbOp">Транзакции</h4>
+                    <h4 id="DbOp">Transactions</h4>
                     <p>
                         mJDBC позволяет работать с транзакциями и SQL запросами без использования транзакционных и SQL интерфейсов,
                         что может быть удобно для небольших приложений, либо если текущий
@@ -529,13 +529,13 @@ User user = db.execute(c -&gt;
             </section>
 
             <section id="Recommendations" class="group">
-                <h3>Рекомендации</h3>
+                <h3>Recommendations</h3>
                 <ul class="spec-list">
-                    <li>Используйте примеры с открытым исходным кодом:
+                    <li>Use sample code from mJDBC tests:
                         <a href="https://github.com/mjdbc/mjdbc/tree/master/src/test/java/com/github/mjdbc/test" target="_blank">тесты</a>,
                         <a href="https://github.com/mfursov/wicket7template/tree/master/src/main/java/com/github/mfursov/w7/db" target="_blank">другие проекты</a> на GitHub.
                     </li>
-                    <li>Используйте пулы для соединения с базой данных. Пример: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
+                    <li>Use database connection pooling. Example: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
                 </ul>
             </section>
 
