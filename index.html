@@ -451,12 +451,12 @@ public final class DbTimer {
                 <div class="subgroup">
                     <h4 id="DbOp">Transactions</h4>
                     <p>
-                        mJDBC позволяет работать с транзакциями и SQL запросами без использования транзакционных и SQL интерфейсов,
-                        что может быть удобно для небольших приложений, либо если текущий
-                        функционал интерфейсов mJDBC недостаточен.
+                        mJDBC allows to declare transactional boundaries manually without use of transactional or SQL interfaces.
+                        This option may be useful for small applications in order to avoid coding of interfaces or in case if transactional interfaces do
+                        not provide features needed.
                     </p>
                     <p>
-                        Для того, чтобы выполнить транзакционную SQL операцию без использования SQL интерфейса можно использовать одни из следующих методов mJDBC:
+                        In order to run some code inside of SQL transaction and avoid transactional interfaces use one the the following mJDBC methods:
                     </p>
                 <pre class="prettyprint">
 @Nullable
@@ -466,8 +466,9 @@ public final class DbTimer {
 &lt;T&gt; T executeNN(@NotNull DbOpNN&lt;T&gt; op);
 
 void executeV(@NotNull DbOpV op);</pre>
-                    <p>При вызове любого из этих методов имплементация интерфейса <i>DbOp</i> будет исполнена как отдельная транзакция,
-                        также как исполняется отдельный метод транзакционного интерфейса.</p>
+                    <p>When any of the methods above is called mJDBC will wrap the <i>DbOp</i> implementation into a real SQL transaction first and run
+                        the implementation from within the transaction. The logic here is the same as with transactional interfaces: once the top-level method finishes successfully
+                        the transaction commits. Transaction is rolled back if the method throws any exception. All nested method calls reuse existing transactional context. </p>
                 <pre class="prettyprint">
 /**
  * Database operation with @Nullable result.
