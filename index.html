@@ -492,10 +492,12 @@ public interface DbOpNN&lt;T&gt; {
     @NotNull
     T run(@NotNull DbConnection c) throws Exception;
 }</pre>
-                    <p>Присутствие трех различных интерфейсов отличающихся лишь типом возвращаемого результата сделано для
-                        удобства использования и возможности использования статических анализаторов кода.</p>
+                    <p>mJDBC provides 3 similar DbOp interfaces that handles return values differently.
+                        It allows to use more expressive syntax and utilize a power of static code analyzers.</p>
+
                     <p>Параметр <i>DbConnection</i> предоставляет прямой доступ к <i>java.sql.Connection</i>
                         и используется mJDBC для использования совместно с классом <i>DbPreparedStatement</i> описанным ниже.</p>
+
                     <p>В случае, если верхнеуровневый <i>DbOp.run</i> метод завершается без выбрасывания исключения, у текущей транзакции вызывается метод <i>commit</i>.
                         Иначе вызывается метод <i>rollback</i>. Вложенные вызовы <i>execute(DbOp)</i> не приводят к созданию новых транзакций и встраиваются в
                         транзакционный контекст вызывающего метода.</p>
