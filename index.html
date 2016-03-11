@@ -348,7 +348,7 @@ public interface DbBinder&lt;T&gt; {
             </section>
 
             <section id="Mappers" class="group">
-                <h3>SQL результаты</h3>
+                <h3>SQL results</h3>
                 <p>
                     mJDBC необходимо знать каким образом преобразовывать возвращаемые SQL интерфейсом данные в Java объекты.
                     По умолчанию mJDBC поддерживает все примитивные Java типы и их объектные аналоги, типы <i>java.sql.Date</i>, <i>java.sql.Timestamp</i>, <i>java.util.Date</i>,
@@ -493,10 +493,10 @@ public interface DbOpNN&lt;T&gt; {
     T run(@NotNull DbConnection c) throws Exception;
 }</pre>
                     <p>mJDBC provides 3 similar DbOp interfaces that handles return values differently.
-                        It allows to use more expressive syntax and utilize a power of static code analyzers.</p>
+                        It allows to use more expressive syntax and utilize power of static code analyzers.</p>
 
-                    <p>Параметр <i>DbConnection</i> предоставляет прямой доступ к <i>java.sql.Connection</i>
-                        и используется mJDBC для использования совместно с классом <i>DbPreparedStatement</i> описанным ниже.</p>
+                    <p><i>DbOp</i>'s <i>DbConnection</i> parameter provides to user direct access to <i>java.sql.Connection</i>
+                        and is used by mJDBC together with <i>DbPreparedStatement</i> class described below.</p>
 
                     <p>В случае, если верхнеуровневый <i>DbOp.run</i> метод завершается без выбрасывания исключения, у текущей транзакции вызывается метод <i>commit</i>.
                         Иначе вызывается метод <i>rollback</i>. Вложенные вызовы <i>execute(DbOp)</i> не приводят к созданию новых транзакций и встраиваются в
