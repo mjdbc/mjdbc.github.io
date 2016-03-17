@@ -498,9 +498,9 @@ public interface DbOpNN&lt;T&gt; {
                     <p><i>DbOp</i>'s <i>DbConnection</i> parameter provides to user direct access to <i>java.sql.Connection</i>
                         and is used by mJDBC together with <i>DbPreparedStatement</i> class described below.</p>
 
-                    <p>В случае, если верхнеуровневый <i>DbOp.run</i> метод завершается без выбрасывания исключения, у текущей транзакции вызывается метод <i>commit</i>.
-                        Иначе вызывается метод <i>rollback</i>. Вложенные вызовы <i>execute(DbOp)</i> не приводят к созданию новых транзакций и встраиваются в
-                        транзакционный контекст вызывающего метода.</p>
+                    <p>If the top level <i>DbOp.run</i> method is finished normally without throwing an exception, active transaction is committed.
+                        In case if there was an exception the transaction is rolled back.
+                        Nested <i>execute(DbOp)</i> calls do not create new transactions and reuse transaction context from the caller method.</p>
                 </div>
                 <div class="subgroup">
                     <h4 id="DbStatement">SQL запросы</h4>
