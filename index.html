@@ -505,8 +505,8 @@ public interface DbOpNN&lt;T&gt; {
                 <div class="subgroup">
                     <h4 id="DbStatement">SQL запросы</h4>
                     <p>
-                        Для создания SQL запросов без использования SQL интерфейса mJDBC предоставляет класс <i>DbPreparedStatement</i>. Этот класс является оболочкой и
-                        предоставляет полный доступ к <i>java.sql.PreparedStatement</i>, а также предоставляет следующий дополнительный функционал:
+                        To create SQL queries without use of SQL interfaces mJDBC provides <i>DbPreparedStatement</i> class.
+                        This class is a wrapper and provides direct access to <i>java.sql.PreparedStatement</i> and the following additional functionality:
                     </p>
                     <ul class="spec-list">
                         <li>Работа с именованными параметрами.</li>
@@ -515,7 +515,7 @@ public interface DbOpNN&lt;T&gt; {
                         <li>Автоматическое освобождение ресурсов при завершении транзакции/соединения.</li>
                     </ul>
                     <p>
-                        Примеры использования <i>DbPreparedStatement</i> совместно с <i>DbOp</i>:
+                        Examples of <i>DbPreparedStatement</i> used with <i>DbOp</i>:
                     </p>
                     <pre class="prettyprint">
 List&lt;User&gt; users = db.execute(c -&gt;
