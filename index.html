@@ -505,14 +505,14 @@ public interface DbOpNN&lt;T&gt; {
                 <div class="subgroup">
                     <h4 id="DbStatement">SQL запросы</h4>
                     <p>
-                        To create SQL queries without use of SQL interfaces mJDBC provides <i>DbPreparedStatement</i> class.
+                        To create SQL queries directly without use of SQL interfaces mJDBC provides <i>DbPreparedStatement</i> class.
                         This class is a wrapper and provides direct access to <i>java.sql.PreparedStatement</i> and the following additional functionality:
                     </p>
                     <ul class="spec-list">
-                        <li>Работа с именованными параметрами.</li>
-                        <li>Проверка корректности привязки параметров на момент создания.</li>
-                        <li>Отображения результатов в Java объекты при помощи <i>DbMapper</i>.</li>
-                        <li>Автоматическое освобождение ресурсов при завершении транзакции/соединения.</li>
+                        <li>Support of named parameters.</li>
+                        <li>Instantiation time parameters syntax validation.</li>
+                        <li>Support for results mapping with <i>DbMapper</i> interface.</li>
+                        <li>SQL resources cleanup (like open ResultSets) when leaving transaction boundaries.</li>
                     </ul>
                     <p>
                         Examples of <i>DbPreparedStatement</i> used with <i>DbOp</i>:
@@ -526,8 +526,9 @@ List&lt;User&gt; users = db.execute(c -&gt;
 User user = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users WHERE login = :login&quot;, User.class).set("login", "admin").query());</pre>
                 </div>
-                <p>Все операции с <i>DbPreparedStatement</i> выполненные внутри <i>DbOp</i> метода являются частью одной транзакции.
-                    Все связанные с ними ресурсы отслеживаются mJDBC и автоматически высвобождаются по завершении транзакции.</p>
+                <p>
+                    All queries with <i>DbPreparedStatement</i> run inside another <i>DbOp</i> wrapper use the same transaction.
+                    All SQL resources inside the transaction are tracked by mJDBC and automatically released when transaction is finised.</p>
 
             </section>
 
