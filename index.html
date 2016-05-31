@@ -24,12 +24,12 @@
     <div class="container">
         <div class="logo-header-block">
             <div class="lang-switch-block"><a href="/" title="Switch to English">en</a> | <a href="/ru" title="Переключиться на русский">ru</a></div>
-            <h1 class="logo-header">mJDBC<sub>v1.0.0</sub></h1>
+            <h1 class="logo-header">mJDBC<sub>v1.1.0</sub></h1>
         </div>
         <div class="header-text">Small and efficient <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a> wrapper
         </div>
         <div class="header-links-block">
-            <a href="http://mvnrepository.com/artifact/com.github.mjdbc/mjdbc/1.0.0" class="btn btn-default btn-sm btn-header" target="_blank">Maven</a>
+            <a href="http://mvnrepository.com/artifact/com.github.mjdbc/mjdbc/1.1.0" class="btn btn-default btn-sm btn-header" target="_blank">Maven</a>
             <a href="http://github.com/mjdbc/mjdbc" class="btn btn-default btn-sm btn-header" target="_blank">GitHub</a>
         </div>
     </div>
@@ -63,7 +63,7 @@
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.mjdbc&lt;/groupId&gt;
     &lt;artifactId&gt;mjdbc&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;</pre>
                 </div>
             </section>
@@ -112,7 +112,7 @@ public interface UserDbi {
 public class UserDbiImpl implements UserDbi {
     public void registerUser(User user) {
         User copy = userSql.getUserByLogin(user.login);
-        assertNull(copy, "Пользователь уже существует: " + user.login);
+        assertNull(copy, "User already exists: " + user.login);
         user.id = userSql.insertUser(user);
     }
 }
@@ -350,20 +350,20 @@ public interface DbBinder&lt;T&gt; {
             <section id="Mappers" class="group">
                 <h3>SQL results</h3>
                 <p>
-                    mJDBC необходимо знать каким образом преобразовывать возвращаемые SQL интерфейсом данные в Java объекты.
-                    По умолчанию mJDBC поддерживает все примитивные Java типы и их объектные аналоги, типы <i>java.sql.Date</i>, <i>java.sql.Timestamp</i>, <i>java.util.Date</i>,
-                    <i>java.math.BigDecimal</i> и интерфейс списков <i>java.util.List</i>. Для списков в качестве реализации используется <i>java.util.ArrayList</i>.
+                    mJDBC must know how to correctly instantiate and initialize results of Sql interface methods.
+                    Out of the box mJDBC supports all primitive Java type and their Object counterparts, <i>java.sql.Date</i>, <i>java.sql.Timestamp</i>, <i>java.util.Date</i>,
+                    and <i>java.math.BigDecimal</i> types and <i>java.util.List</i> interface for the case when multiple results are returned.
                 </p>
                 <p>
-                    Для того, чтобы расширить диапазон поддерживаемых типов необходимо зарегистрировать реализацию интерфейса <i>DbMapper</i>, которая из текущей позиции
-                    <i>ResultSet</i> создаст и заполнит нужными значениями экземпляр возвращаемого объекта:
+                    To extend the set of supported method result type a new instance of <i>DbMapper</i> interface must be registered. This instance must provide a method that is used to map
+                    any given <i>ResultSet</i> position into valid result object instance.
                 </p>
                     <pre class="prettyprint">
 public interface DbMapper&lt;T&gt; {
     T map(@NotNull java.sql.ResultSet r) throws SQLException;
 }</pre>
 
-                <p>Например: </p>
+                <p>Example: </p>
                 <pre class="prettyprint">
 DbMapper&lt;User&gt; mapper = (r) -&gt; {
     User user = new User();
@@ -374,20 +374,20 @@ DbMapper&lt;User&gt; mapper = (r) -&gt; {
 db.registerMapper(User.class, mapper);
 </pre>
                 <p>
-                    Существует несколько техник, которые позволяют mJDBC автоматически находить необходимые реализации <i>DbMapper</i> для возвращаемых методами SQL интерфесов типов,
-                    делая их ручную регистрацию опциональной. Для этого, для возвращаемого типа <i>T</i> должно быть выполнено следующее условие:
+                    To make mJDBC automatically find <i>DbMapper</i> implementation for Sql interface results the following condition must be met for any given type &lt;T&gt;:
                 </p>
                 <ul class="spec-list">
-                    <li>Присутствует публичное статическое финальное поле с аннотацией <i>@Mapper</i> и типом <i>DbMapper&lt;T&gt;</i></li>
+                    <li>The class or return type has a static field annotated with <i>@Mapper</i> and with a type <i>DbMapper&lt;T&gt;</i></li>
                 </ul>
                 <p>
-                    Автоматический поиск нужного экземпляра происходит при условии, что для типа <i>T</i> нет экземпляра <i>DbMapper&lt;T&gt;</i> зарегистрированного вручную.
+                    The resolve algorithm described above is performed by mJDBC only if for the given type &lt;T&gt; there
+                    is no manually registered <i>DbMapper&lt;T&gt;</i> instance.
                 </p>
                 <p>
-                    Поиск происходит на момент регистрации SQL интерфейса.
-                    В случае, если в результате поиска найдено 2 или более кандидата на роль <i>DbMapper</i>, выбрасывается исключение и регистрации SQL-интерфейса не происходит.</p>
+                    <i>DbMapper</i> instance resolution is performed during Sql interface registration.
+                    If there are 2 or more candidates for the given type &lt;T&gt; mJDBC throws Exception and does not register Sql interface.</p>
                 <p>
-                    Повторные прямые вызовы метода <i>registerMapper</i> допускаются и приводят к регистрации нового обработчика <i>DbMapper</i> для указанного типа.
+                    Multiple <i>registerMapper</i> calls for the same type &lt;T&gt; are allowed and result to active <i>DbMapper</i> instance update.
                 </p>
             </section>
 
@@ -423,7 +423,7 @@ void updateScore(@BindBean List&lt;User&gt; users);
                     Java arrays, <i>java.util.Iterable</i> and <i>java.util.Iterator</i>.
                 </p>
                 <p>
-                    Batch parameters are mapped to native named SQL parameters like regular parameters with <i>@Bind</i> и <i>@BindBean</i> annotations.
+                    Batch parameters are mapped to native named SQL parameters like regular parameters with <i>@Bind</i> and <i>@BindBean</i> annotations.
                     The only restriction for batch parameters: only 1 batch parameter per <i>@SQL</i> query is allowed.
                 </p>
             </section>
@@ -503,7 +503,7 @@ public interface DbOpNN&lt;T&gt; {
                         Nested <i>execute(DbOp)</i> calls do not create new transactions and reuse transaction context from the caller method.</p>
                 </div>
                 <div class="subgroup">
-                    <h4 id="DbStatement">SQL запросы</h4>
+                    <h4 id="DbStatement">SQL queries</h4>
                     <p>
                         To create SQL queries directly without use of SQL interfaces mJDBC provides <i>DbPreparedStatement</i> class.
                         This class is a wrapper and provides direct access to <i>java.sql.PreparedStatement</i> and the following additional functionality:
@@ -536,8 +536,8 @@ User user = db.execute(c -&gt;
                 <h3>Recommendations</h3>
                 <ul class="spec-list">
                     <li>Use sample code from mJDBC tests:
-                        <a href="https://github.com/mjdbc/mjdbc/tree/master/src/test/java/com/github/mjdbc/test" target="_blank">тесты</a>,
-                        <a href="https://github.com/mfursov/wicket7template/tree/master/src/main/java/com/github/mfursov/w7/db" target="_blank">другие проекты</a> на GitHub.
+                        <a href="https://github.com/mjdbc/mjdbc/tree/master/src/test/java/com/github/mjdbc/test" target="_blank">test cases</a>,
+                        <a href="https://github.com/mfursov/wicket7template/tree/master/src/main/java/com/github/mfursov/w7/db" target="_blank">other projects</a> on GitHub.
                     </li>
                     <li>Use database connection pooling. Example: <a href="https://brettwooldridge.github.io/HikariCP/" target="_blank">HikariCP</a></li>
                 </ul>
