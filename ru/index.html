@@ -4,7 +4,7 @@
     <meta charset=utf-8>
     <meta http-equiv=X-UA-Compatible content="IE=edge">
     <meta name=viewport content="width=device-width,initial-scale=1">
-    <meta name=description content="mjdbc - small and efficient JDBC wrapper">
+    <meta name=description content="mjdbc - небольшой и эффективный маппер для JDBC">
     <meta name=keywords content="jdbc, java, jdbi, mjdbc, sql, mapper, transaction, ORM">
     <meta name=author content="Mikhail Fursov and mjdbc contributors">
     <title>mJDBC - small and efficient JDBC wrapper</title>
@@ -343,7 +343,7 @@ public interface DbBinder&lt;T&gt; {
                     Для того, чтобы расширить диапазон поддерживаемых типов необходимо зарегистрировать реализацию интерфейса <i>DbMapper</i>, которая из текущей позиции
                     <i>ResultSet</i> создаст и заполнит нужными значениями экземпляр возвращаемого объекта:
                 </p>
-                    <pre class="prettyprint">
+                <pre class="prettyprint">
 public interface DbMapper&lt;T&gt; {
     T map(@NotNull java.sql.ResultSet r) throws SQLException;
 }</pre>
@@ -442,7 +442,7 @@ public final class DbTimer {
                     <p>
                         Для того, чтобы выполнить транзакционную SQL операцию без использования Транзакционного интерфейса можно использовать одни из следующих методов mJDBC:
                     </p>
-                <pre class="prettyprint">
+                    <pre class="prettyprint">
 @Nullable
 &lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
 
@@ -452,7 +452,7 @@ public final class DbTimer {
 void executeV(@NotNull DbOpV op);</pre>
                     <p>При вызове любого из этих методов имплементация интерфейса <i>DbOp</i> будет исполнена как отдельная транзакция,
                         также как исполняется отдельный метод транзакционного интерфейса.</p>
-                <pre class="prettyprint">
+                    <pre class="prettyprint">
 /**
  * Database operation with @Nullable result.
  */
