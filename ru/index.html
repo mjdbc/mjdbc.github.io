@@ -89,7 +89,7 @@ public interface UserSql {
 }
 
 // Шаг 3: Определяем правила считывания структур из ResultSet
-db.registerMapper(User.class, (r) -> {
+db.registerMapper(User.class, r -> {
     User user = new User();
     user.id = r.getInt("id");
     user.login = r.getString("login");
@@ -101,7 +101,7 @@ db.registerMapper(User.class, (r) -> {
 UserSql userSql = db.attachSql(UserSql.class);
 
 // Шаг 5: Используем SQL интерфейс для исполнения запросов
-User user = userSql.getUserByLogin('login');</pre>
+User user = userSql.getUserByLogin("login");</pre>
 
                     Пример 2: Транзакции
                     <pre class="prettyprint">

@@ -87,7 +87,7 @@ public interface UserSql {
 }
 
 // Step 3: Define rules to map SQL results to Java objects
-db.registerMapper(User.class, (r) -> {
+db.registerMapper(User.class, r -> {
     User user = new User();
     user.id = r.getInt("id");
     user.login = r.getString("login");
@@ -99,7 +99,7 @@ db.registerMapper(User.class, (r) -> {
 UserSql userSql = db.attachSql(UserSql.class);
 
 // Step 5: Use SQL interface to perform queries
-User user = userSql.getUserByLogin('login');</pre>
+User user = userSql.getUserByLogin("login");</pre>
 
                     Example 2: Transactions
                     <pre class="prettyprint">
@@ -358,7 +358,7 @@ public interface DbBinder&lt;T&gt; {
                     To extend the set of supported method result type a new instance of <i>DbMapper</i> interface must be registered. This instance must provide a method that is used to map
                     any given <i>ResultSet</i> position into valid result object instance.
                 </p>
-                    <pre class="prettyprint">
+                <pre class="prettyprint">
 public interface DbMapper&lt;T&gt; {
     T map(@NotNull java.sql.ResultSet r) throws SQLException;
 }</pre>
@@ -458,7 +458,7 @@ public final class DbTimer {
                     <p>
                         In order to run some code inside of SQL transaction and avoid transactional interfaces use one the the following mJDBC methods:
                     </p>
-                <pre class="prettyprint">
+                    <pre class="prettyprint">
 @Nullable
 &lt;T&gt; T execute(@NotNull DbOp&lt;T&gt; op);
 
@@ -469,7 +469,7 @@ void executeV(@NotNull DbOpV op);</pre>
                     <p>When any of the methods above is called mJDBC will wrap the <i>DbOp</i> implementation into a real SQL transaction first and run
                         the implementation from within the transaction. The logic here is the same as with transactional interfaces: once the top-level method finishes successfully
                         the transaction commits. Transaction is rolled back if the method throws any exception. All nested method calls reuse existing transactional context. </p>
-                <pre class="prettyprint">
+                    <pre class="prettyprint">
 /**
  * Database operation with @Nullable result.
  */
@@ -522,7 +522,7 @@ List&lt;User&gt; users = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users&quot;, User.class)
         .queryList());</pre>
 
-            <pre class="prettyprint">
+                    <pre class="prettyprint">
 User user = db.execute(c -&gt;
     new DbPreparedStatement&lt;&gt;(c, &quot;SELECT * FROM users WHERE login = :login&quot;, User.class).set("login", "admin").query());</pre>
                 </div>
