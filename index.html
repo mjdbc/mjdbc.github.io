@@ -24,7 +24,7 @@
     <div class="container">
         <div class="logo-header-block">
             <div class="lang-switch-block"><a href="/" title="Switch to English">en</a> | <a href="/ru" title="Переключиться на русский">ru</a></div>
-            <h1 class="logo-header">mJDBC<sub>v1.2.1</sub></h1>
+            <h1 class="logo-header">mJDBC<sub>v1.3.1</sub></h1>
         </div>
         <div class="header-text">Small and efficient <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a> wrapper
         </div>
@@ -63,7 +63,7 @@
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.mjdbc&lt;/groupId&gt;
     &lt;artifactId&gt;mjdbc&lt;/artifactId&gt;
-    &lt;version&gt;1.2.1&lt;/version&gt;
+    &lt;version&gt;1.3.1&lt;/version&gt;
 &lt;/dependency&gt;</pre>
                 </div>
             </section>
@@ -75,7 +75,7 @@
                     <pre class="prettyprint">
 // Step 1: Create mJDBC adapter for java.sql.DataSource
 java.sql.DataSource ds = ...;
-Db db = Db.newInstance(ds);
+Db db = DbFactory.wrap(ds);
 
 // Step 2: Design SQL interface
 public interface UserSql {
@@ -131,7 +131,7 @@ userDbi.registerUser(new User("root"));</pre>
                     To start using mJDBC create an instance of <i>com.github.mjdbc.Db</i> providing <i>javax.sql.DataSource</i> object to the factory method:
                 </p>
                 <pre class="prettyprint">
-static Db newInstance(DataSource ds)</pre>
+static Db DbFactory.wrap(DataSource ds)</pre>
                 <p>
                     <a href="#Transactions">Transactional interfaces</a> allows to execute multiple SQL requests within a single transaction: either all
                     of SQL request inside transaction will succeed or no effect on database state will done at all.

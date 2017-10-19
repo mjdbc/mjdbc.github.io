@@ -24,7 +24,7 @@
     <div class="container">
         <div class="logo-header-block">
             <div class="lang-switch-block"><a href="/" title="Switch to English">en</a> | <a href="/ru" title="Переключиться на русский">ru</a></div>
-            <h1 class="logo-header">mJDBC<sub>v1.2.1</sub></h1>
+            <h1 class="logo-header">mJDBC<sub>v1.3.1</sub></h1>
         </div>
         <div class="header-text">компактная, простая и удобная библиотека для
             <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank">JDBC</a>
@@ -65,7 +65,7 @@
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.mjdbc&lt;/groupId&gt;
     &lt;artifactId&gt;mjdbc&lt;/artifactId&gt;
-    &lt;version&gt;1.2.1&lt;/version&gt;
+    &lt;version&gt;1.3.1&lt;/version&gt;
 &lt;/dependency&gt;</pre>
                 </div>
             </section>
@@ -77,7 +77,7 @@
                     <pre class="prettyprint">
 // Шаг 1: Создаем mJDBC адаптер для java.sql.DataSource
 java.sql.DataSource ds = ...;
-Db db = Db.newInstance(ds);
+Db db = DbFactory.wrap(ds);
 
 // Шаг 2: Описываем SQL интерфейс
 public interface UserSql {
@@ -133,7 +133,7 @@ userDbi.registerUser(new User("root"));</pre>
                     Для того, чтобы начать использовать mJDBC необходимо создать адаптер типа <i>com.github.mjdbc.Db</i> поверх экземпляра <i>javax.sql.DataSource</i>.
                     Для этого нужно использовать статический метод-фабрику:</p>
                 <pre class="prettyprint">
-static Db newInstance(DataSource ds)</pre>
+static DbFactory wrap(DataSource ds)</pre>
                 <p><a href="#Transactions"> Транзакционные интерфейсы</a> позволяют выполнить серию SQL-запросов как единую транзакцию давая гарантию, что либо все SQL операции внутри
                     транзакции будут завершены успешено, либо ни одна из них не будет иметь эффект при завершении транзакции.
                     Для регистрации транзакционных интерфейсов используйте следующий метод:
