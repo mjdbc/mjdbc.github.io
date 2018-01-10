@@ -83,7 +83,7 @@ public interface UserSql {
     int insertUser(@BindBean User user);
 
     @Sql("SELECT * FROM users WHERE login = :login")
-    User getUserByLogin(@Bind("login") String login)
+    User getUserByLogin(@Bind("login") String login);
 }
 
 // Step 3: Define rules to map SQL results to Java objects
